@@ -41,17 +41,16 @@ namespace yny {
         GLuint elevation_texture;
         GLuint vao, vbo, ebo;
         GLuint program;
-        Player& scene_player;
 
         int latitude_minute = 0, longitude_minute = 0;
         std::vector<vertex> vertices;
         std::vector<uint32_t> indices;
 
-        void render() override;
+        void render(Player& scene_player) override;
 
-        explicit ElevationObject(Player& scene_player);
+        ElevationObject();
     private:
-        void recalc_terrain();
+        void recalc_terrain(Player& scene_player);
     };
 
 } // yny

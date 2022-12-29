@@ -65,7 +65,7 @@ glm::vec3 get_triangle_normal(glm::vec3 a, glm::vec3 b, glm::vec3 c) {
 
 
 namespace yny {
-    void ElevationObject::recalc_terrain() {
+    void ElevationObject::recalc_terrain(Player& scene_player) {
         int latitude_seconds = scene_player.latitude_minute * 60;
         int longitude_seconds = scene_player.longitude_minute * 60;
         float center_latitude_grad = scene_player.latitude + latitude_seconds / 3600.f;
@@ -223,12 +223,12 @@ namespace yny {
         }
     }
 
-    void ElevationObject::render()  {
+    void ElevationObject::render(Player& scene_player)  {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, elevation_texture);
 
         if (latitude_minute != scene_player.latitude_minute || longitude_minute != scene_player.longitude_minute) {
-            recalc_terrain();
+            recalc_terrain(scene_player);
         }
         glBindVertexArray(vao);
 
@@ -259,7 +259,7 @@ namespace yny {
         glDrawElements(GL_TRIANGLES, indices.size(),  GL_UNSIGNED_INT, nullptr);
     }
 
-    ElevationObject::ElevationObject(Player& scene_player) : scene_player(scene_player) {
+    ElevationObject::ElevationObject() {
         auto vertex_shader = create_shader(GL_VERTEX_SHADER, vertex_shader_source);
         auto fragment_shader = create_shader(GL_FRAGMENT_SHADER, fragment_shader_source);
         program = create_program(vertex_shader, fragment_shader);

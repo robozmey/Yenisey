@@ -23,6 +23,7 @@
 #include "tools.h"
 
 #include "Scene.h"
+#include "Skybox.h"
 #include "ElevationObject.h"
 
 
@@ -72,8 +73,9 @@ int main() {
     std::map<SDL_Keycode, bool> button_down;
 
     yny::Scene scene;
-    yny::ElevationObject elevation_object(scene.player);
-    scene.objects.push_back(&elevation_object);
+    scene.skybox = yny::Skybox();
+    yny::ElevationObject elevation_object;
+    scene.objects.push_back( reinterpret_cast<yny::Object *>(&elevation_object));
 
     bool running = true;
     while (running)
@@ -111,7 +113,6 @@ int main() {
 
         scene.player.move(button_down, dt);
         scene.player.update_screen(width, height);
-        scene.player.recalc();
         scene.render();
 
         SDL_GL_SwapWindow(window);

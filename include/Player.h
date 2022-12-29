@@ -18,6 +18,7 @@
 #include <glm/mat4x4.hpp>
 #include <glm/ext/matrix_transform.hpp>
 #include <glm/ext/matrix_clip_space.hpp>
+#include <glm/ext/scalar_constants.hpp>
 
 #include <map>
 
@@ -30,9 +31,11 @@ namespace yny {
         float rotation_speed = 1;
         float movement_speed = 30;
 
-        glm::vec3 camera_position = glm::vec3(0, -5000, -2);
+        glm::vec3 inner_camera_position = glm::vec3(0, 0, 0);
         glm::vec3 camera_rotation = glm::vec3(0.5, 0, 0);
         glm::vec3 camera_direction, side_direction;
+
+        glm::vec3 camera_position;
 
         glm::mat4 model = glm::mat4(1.f);
         glm::mat4 view = glm::mat4(1.f);

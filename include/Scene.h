@@ -9,6 +9,7 @@
 
 #include "Object.h"
 #include "Player.h"
+#include "Skybox.h"
 
 namespace yny {
 
@@ -16,6 +17,7 @@ namespace yny {
     public:
         std::vector<Object*> objects;
         Player player;
+        Skybox skybox;
 
         void render();
     };

@@ -1,4 +1,5 @@
 #include "tools.h"
+#include "stb_image.h"
 
 std::string to_string(std::string_view str)
 {
@@ -30,5 +31,23 @@ GLuint create_shader(GLenum type, const char * source)
         glGetShaderInfoLog(result, info_log.size(), nullptr, info_log.data());
         throw std::runtime_error("Shader compilation failed: " + info_log);
     }
+    return result;
+}
+
+GLuint load_texture(std::string const & path)
+{
+    int width, height, channels;
+    auto pixels = stbi_load(path.data(), &width, &height, &channels, 4);
+
+    GLuint result;
+    glGenTextures(1, &result);
+    glBindTexture(GL_TEXTURE_2D, result);
+    glTexImage2D(GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+    glGenerateMipmap(GL_TEXTURE_2D);
+
+    stbi_image_free(pixels);
+
     return result;
 }

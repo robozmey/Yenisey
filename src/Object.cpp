@@ -6,5 +6,5 @@
 #include <iostream>
 
 namespace yny {
-    void Object::render() {}
+    void Object::render(Player& scene_player) {}
 } // yny

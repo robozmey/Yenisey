@@ -21,7 +21,7 @@ set(TARGET_NAME "${PROJECT_NAME}")
 
 set(PROJECT_ROOT "${CMAKE_CURRENT_SOURCE_DIR}")
 
-add_executable(Yenisey src/main.cpp src/Scene.cpp src/Object.cpp src/Player.cpp src/ElevationObject.cpp src/elevation.cpp src/tools.cpp)
+add_executable(Yenisey src/main.cpp src/Scene.cpp src/Object.cpp src/Player.cpp src/ElevationObject.cpp src/elevation.cpp src/tools.cpp src/Skybox.cpp src/stb_image.c)
 
 target_include_directories(${TARGET_NAME} PUBLIC
         include

@@ -37,16 +37,16 @@ namespace yny {
         camera_direction = glm::vec4(0, 0, movement_speed, 1) * rotation_matrix(camera_rotation);
 
         if (button_down[SDLK_w])
-            camera_position += camera_direction;
+            inner_camera_position += camera_direction;
         if (button_down[SDLK_s])
-            camera_position -= camera_direction;
+            inner_camera_position -= camera_direction;
 
         side_direction = glm::vec4(movement_speed, 0, 0, 1) * rotation_matrix(camera_rotation);
 
         if (button_down[SDLK_a])
-            camera_position += side_direction;
+            inner_camera_position += side_direction;
         if (button_down[SDLK_d])
-            camera_position -= side_direction;
+            inner_camera_position -= side_direction;
 //        return;
 
         float max_dist_x = wgs_distance(latitude + latitude_minute / 60.f,
@@ -58,24 +58,26 @@ namespace yny {
                                         latitude + (latitude_minute) / 60.f,
                                         longitude + (longitude_minute + 1) / 60.f) * 1000;
 
-        if (abs(camera_position.x) > max_dist_x) {
-            if (camera_position.x > max_dist_x) {
-                camera_position.x -= max_dist_x;
+        if (abs(inner_camera_position.x) > max_dist_x) {
+            if (inner_camera_position.x > max_dist_x) {
+                inner_camera_position.x -= max_dist_x;
                 latitude_minute -= 1;
             } else {
-                camera_position.x += max_dist_x;
+                inner_camera_position.x += max_dist_x;
                 latitude_minute += 1;
             }
         }
-        if (abs(camera_position.z) > max_dist_z) {
-            if (camera_position.z > max_dist_z) {
-                camera_position.z -= max_dist_z;
+        if (abs(inner_camera_position.z) > max_dist_z) {
+            if (inner_camera_position.z > max_dist_z) {
+                inner_camera_position.z -= max_dist_z;
                 longitude_minute -= 1;
             } else {
-                camera_position.z += max_dist_z;
+                inner_camera_position.z += max_dist_z;
                 longitude_minute += 1;
             }
         }
+
+        this->recalc();
     }
 
     void Player::update_screen(int width1, int height1) {
@@ -88,12 +90,14 @@ namespace yny {
         view = glm::rotate(view, camera_rotation.x, {1, 0, 0});
         view = glm::rotate(view, camera_rotation.y, {0, 1, 0});
         view = glm::rotate(view, camera_rotation.z, {0, 0, 1});
-        view = glm::translate(view, camera_position);
+        view = glm::translate(view, inner_camera_position);
 
         float top = near;
         float right = (top * width) / height;
 
         projection = glm::mat4(1.f);
         projection = glm::perspective(glm::pi<float>() / 2.f, (1.f * width) / height, near, far);
+
+        camera_position = (glm::inverse(view) * glm::vec4(0.f, 0.f, 0.f, 1.f));
     }
 } // yny

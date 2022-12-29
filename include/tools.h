@@ -21,6 +21,8 @@ void glew_fail(std::string_view message, GLenum error);
 
 GLuint create_shader(GLenum type, const char * source);
 
+GLuint load_texture(std::string const & path);
+
 template <typename ... Shaders>
 GLuint create_program(Shaders ... shaders);
 

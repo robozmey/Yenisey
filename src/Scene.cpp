@@ -12,8 +12,12 @@ namespace yny {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
 
+        skybox.render(player);
+
+        glClear(GL_DEPTH_BUFFER_BIT);
+
         for (Object* object : objects) {
-            object->render();
+            object->render(player);
         }
     }
 } // yny

@@ -6,6 +6,7 @@
 #define YENISEY_OBJECT_H
 
 #include "Feature.h"
+#include "Player.h"
 
 #include <vector>
 
@@ -15,7 +16,7 @@ namespace yny {
     public:
         std::vector<Feature> features;
 
-        virtual void render();
+        virtual void render(Player& scene_player);
     };
 
 } // yny
