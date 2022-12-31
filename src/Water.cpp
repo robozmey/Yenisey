@@ -88,7 +88,7 @@ namespace yny {
     }
 
     void Water::render(Player& scene_player) {
-        int k = 300;
+        int k = 10;
         int r = 10;
         int n = r * 2;
         vertices.resize(n * n);
@@ -110,6 +110,7 @@ namespace yny {
             }
         }
 
+        indices.clear();
         for (int i = 1; i < n; i++) {
             for (int j = 1; j < n; j++) {
                 indices.push_back(i * n + j);
@@ -122,14 +123,13 @@ namespace yny {
             }
         }
 
-        int offset_n = 1;
+        int offset_n = 50;
         std::vector<glm::vec3> offsets(offset_n * offset_n);
         for (int i = -offset_n; i <= offset_n; i++) {
             for (int j = -offset_n; j <= offset_n; j++) {
                 offsets.push_back({i * (n - 1) * k, 0, j * (n - 1) * k});
             }
         }
-
 
         glBindVertexArray(vao);
 

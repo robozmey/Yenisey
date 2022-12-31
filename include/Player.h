@@ -44,7 +44,7 @@ namespace yny {
         glm::mat4 projection = glm::mat4(1.f);
 
         int latitude = 55, longitude = 92;
-        int latitude_minute = 30, longitude_minute = 30;
+        int latitude_minute = 29, longitude_minute = 30;
 
         float near = 0.1f;
         float far = 100000.f;
