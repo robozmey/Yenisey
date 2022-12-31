@@ -20,31 +20,25 @@
 
 namespace yny {
 
-    struct vertex
-    {
-        glm::vec3 position;
-        glm::vec3 normal;
-        glm::vec2 texcoord;
-    };
-
     class ElevationObject : public Object {
     public:
-        GLuint texture_location;
+        GLuint grass_texture;
+        GLuint grass_normal_texture;
+
         GLuint model_location;
         GLuint view_location;
         GLuint projection_location;
+        GLuint grass_texture_location;
+        GLuint grass_normal_texture_location;
 
         GLuint light_direction_location;
 
-        int lod_count = 5;
+        int lod_count = 4;
         std::vector<elevation_map_t> elevation_map_lod;
-        GLuint elevation_texture;
         GLuint vao, vbo, ebo;
         GLuint program;
 
         int latitude_minute = 0, longitude_minute = 0;
-        std::vector<vertex> vertices;
-        std::vector<uint32_t> indices;
 
         void render(Player& scene_player) override;
 

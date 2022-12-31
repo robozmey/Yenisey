@@ -22,7 +22,10 @@ namespace yny {
         return view;
     }
 
-    void Player::move(std::map<SDL_Keycode, bool> button_down, float dt) {
+    void Player::move(std::map<SDL_Keycode, bool> button_down, float new_time) {
+
+        float dt = new_time - time;
+        time = new_time;
 
         if (button_down[SDLK_UP])
             camera_rotation[0] -= rotation_speed * dt;

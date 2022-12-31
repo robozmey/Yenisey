@@ -16,6 +16,7 @@ namespace yny {
     class Scene {
     public:
         std::vector<Object*> objects;
+        std::vector<Object*> ui;
         Player player;
         Skybox skybox;
 

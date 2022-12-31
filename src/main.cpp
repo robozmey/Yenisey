@@ -25,6 +25,7 @@
 #include "Scene.h"
 #include "Skybox.h"
 #include "ElevationObject.h"
+#include "Water.h"
 
 
 int main() {
@@ -74,8 +75,11 @@ int main() {
 
     yny::Scene scene;
     scene.skybox = yny::Skybox();
+
     yny::ElevationObject elevation_object;
-    scene.objects.push_back( reinterpret_cast<yny::Object *>(&elevation_object));
+    scene.objects.push_back(reinterpret_cast<yny::Object *>(&elevation_object));
+    yny::Water water;
+    scene.objects.push_back(reinterpret_cast<yny::Object *>(&water));
 
     bool running = true;
     while (running)
@@ -111,7 +115,7 @@ int main() {
         time += dt;
 
 
-        scene.player.move(button_down, dt);
+        scene.player.move(button_down, time);
         scene.player.update_screen(width, height);
         scene.render();
 

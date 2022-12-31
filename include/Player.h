@@ -28,10 +28,12 @@ namespace yny {
 
     class Player {
     public:
-        float rotation_speed = 1;
-        float movement_speed = 30;
+        float time = 0;
 
-        glm::vec3 inner_camera_position = glm::vec3(0, 0, 0);
+        float rotation_speed = 1;
+        float movement_speed = 10;
+
+        glm::vec3 inner_camera_position = glm::vec3(0, -200, -100);
         glm::vec3 camera_rotation = glm::vec3(0.5, 0, 0);
         glm::vec3 camera_direction, side_direction;
 

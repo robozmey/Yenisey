@@ -19,5 +19,11 @@ namespace yny {
         for (Object* object : objects) {
             object->render(player);
         }
+
+        glClear(GL_DEPTH_BUFFER_BIT);
+
+        for (Object* ui_element : ui) {
+            ui_element->render(player);
+        }
     }
 } // yny
