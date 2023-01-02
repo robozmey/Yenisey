@@ -35,9 +35,6 @@ namespace yny {
 
         ElevationRenderComponent();
 
-    private:
-        void recalc_terrain(Player& scene_player);
-
     };
 
 } // yny

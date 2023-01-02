@@ -4,6 +4,8 @@
 
 #include "WaterRenderComponent.h"
 #include "tools.h"
+#include "component/MeshComponent.h"
+#include "WaterMeshComponent.h"
 
 const char vertex_shader_source[] =
         R"(#version 330 core
@@ -58,161 +60,14 @@ void main()
 }
 )";
 
-float cross2(glm::vec2 a, glm::vec2 b) {
-    return a.x * b.x + a.y * b.y;
-}
-
 namespace yny {
-    float WaterRenderComponent::h(float x, float z, float t) {
-        float res = 0;
-        for (auto wf : wave_funcs) {
-            res += wf.amplitude * sin(cross2(wf.direction, glm::vec2(x, z)) * wf.wavelength + t * wf.phase_constant);
-        }
-        return res;
-    }
-
-    float WaterRenderComponent::dhx(float x, float z, float t) {
-        float res = 0;
-        for (auto wf : wave_funcs) {
-            res += wf.wavelength * wf.direction.x * wf.amplitude * cos(cross2(wf.direction, glm::vec2(x, z)) * wf.wavelength + t * wf.phase_constant);
-        }
-        return res;
-    }
-
-    float WaterRenderComponent::dhz(float x, float z, float t) {
-        float res = 0;
-        for (auto wf : wave_funcs) {
-            res += wf.wavelength * wf.direction.y * wf.amplitude * cos(cross2(wf.direction, glm::vec2(x, z)) * wf.wavelength + t * wf.phase_constant);
-        }
-        return res;
-    }
-
-    void WaterRenderComponent::update_vertices(Player& scene_player) {
-        int k = 50;
-        int r = 20;
-        int n = r * 2 + 1;
-        vertices.resize(lod_count * n * n);
-        indices.clear();
-        for (int lod = 0; lod < lod_count; lod++) {
-            int lod_verteces_offset = n * n * lod;
-            for (int i = 0; i < n; i++) {
-                for (int j = 0; j < n; j++) {
-                    float time = scene_player.time;
-
-                    float x = (i - r) * k * (1<<lod);
-                    float z = (j - r) * k * (1<<lod);
-                    float y = h(x, z, time) - 370;
-                    vertex &v = vertices[lod_verteces_offset + i * n + j];
-                    v.position = {x, y, z}; //
-
-                    glm::vec3 b = {1, dhx(x, z, time), 0};
-                    glm::vec3 t = {0, dhz(x, z, time), 1};
-
-                    v.normal = glm::cross(b, t);
-                    v.tangent = t;
-                }
-            }
-
-            for (int i = 1; i < n; i++) {
-                for (int j = 1; j < n; j++) {
-                    if (lod == 0 || abs(i - r - 0.5) * 2 > r + 1 || abs(j - r - 0.5) * 2 > r + 1) {
-                        indices.push_back(lod_verteces_offset + i * n + j);
-                        indices.push_back(lod_verteces_offset + (i) * n + j - 1);
-                        indices.push_back(lod_verteces_offset + (i - 1) * n + j);
-
-                        indices.push_back(lod_verteces_offset + (i - 1) * n + j - 1);
-                        indices.push_back(lod_verteces_offset + (i - 1) * n + j);
-                        indices.push_back(lod_verteces_offset + (i) * n + j - 1);
-                    }
-                }
-            }
-            int pr_lod_verteces_offset = n * n * (lod - 1);
-            if (lod > 0) {
-                for (int t = 0; t < 2; t++) {
-                    int i = 3 * r / 2 + 1;
-                    int pr_i = n - 1;
-                    if (t == 1) {
-                        i = r / 2 - 1;
-                        pr_i = 0;
-                    }
-                    for (int t2 = 0; t2 < 2; t2++) {
-                        int j = r / 2;
-                        if (t2 == 1) {
-                            j = 3 * r / 2;
-                        }
-                        indices.push_back(lod_verteces_offset + i * n + j + 1 - (1 - t2));
-                        indices.push_back(lod_verteces_offset + i * n + j - (1 - t2));
-                        indices.push_back(pr_lod_verteces_offset + pr_i * n + (j - r / 2) * 2);
-                        if (t == 1) {
-                            std::swap(indices[indices.size() - 2], indices[indices.size() - 1]);
-                        }
-
-                        indices.push_back(lod_verteces_offset + (j + 1 - (1 - t2)) * n + i);
-                        indices.push_back(lod_verteces_offset + (j - (1 - t2)) * n + i);
-                        indices.push_back(pr_lod_verteces_offset + ((j - r / 2) * 2) * n + pr_i);
-                        if (t == 0) {
-                            std::swap(indices[indices.size() - 2], indices[indices.size() - 1]);
-                        }
-                    }
-
-                    for (int j = r / 2 + 1; j < n - r / 2; j++) {
-                        indices.push_back(lod_verteces_offset + i * n + j);
-                        indices.push_back(lod_verteces_offset + i * n + j - 1);
-                        indices.push_back(pr_lod_verteces_offset + pr_i * n + (j - r / 2) * 2 - 1);
-                        if (t == 1) {
-                            std::swap(indices[indices.size() - 2], indices[indices.size() - 1]);
-                        }
-
-                        indices.push_back(lod_verteces_offset + i * n + j - 1);
-                        indices.push_back(pr_lod_verteces_offset + pr_i * n + (j - r / 2) * 2 - 2);
-                        indices.push_back(pr_lod_verteces_offset + pr_i * n + (j - r / 2) * 2 - 1);
-                        if (t == 1) {
-                            std::swap(indices[indices.size() - 2], indices[indices.size() - 1]);
-                        }
-
-                        indices.push_back(lod_verteces_offset + i * n + j);
-                        indices.push_back(pr_lod_verteces_offset + pr_i * n + (j - r / 2) * 2 - 1);
-                        indices.push_back(pr_lod_verteces_offset + pr_i * n + (j - r / 2) * 2);
-                        if (t == 1) {
-                            std::swap(indices[indices.size() - 2], indices[indices.size() - 1]);
-                        }
-
-
-                        indices.push_back(lod_verteces_offset + (j - 1) * n + i);
-                        indices.push_back(lod_verteces_offset + j * n + i);
-                        indices.push_back(pr_lod_verteces_offset + ((j - r / 2) * 2 - 1) * n + pr_i);
-                        if (t == 1) {
-                            std::swap(indices[indices.size() - 2], indices[indices.size() - 1]);
-                        }
-
-                        indices.push_back(lod_verteces_offset + (j - 1) * n + i);
-                        indices.push_back(pr_lod_verteces_offset + ((j - r / 2) * 2 - 1) * n + pr_i);
-                        indices.push_back(pr_lod_verteces_offset + ((j - r / 2) * 2 - 2) * n + pr_i);
-                        if (t == 1) {
-                            std::swap(indices[indices.size() - 2], indices[indices.size() - 1]);
-                        }
-
-                        indices.push_back(lod_verteces_offset + (j) * n + i);
-                        indices.push_back(pr_lod_verteces_offset + ((j - r / 2) * 2) * n + pr_i);
-                        indices.push_back(pr_lod_verteces_offset + ((j - r / 2) * 2 - 1) * n + pr_i);
-                        if (t == 1) {
-                            std::swap(indices[indices.size() - 2], indices[indices.size() - 1]);
-                        }
-                    }
-                }
-            }
-        }
-
-        int offset_n = 0;
-        offsets.clear();
-        for (int i = -offset_n; i <= offset_n; i++) {
-            for (int j = -offset_n; j <= offset_n; j++) {
-                offsets.emplace_back(i * (n - 1) * k, 0, j * (n - 1) * k);
-            }
-        }
-    }
 
     void WaterRenderComponent::render(Player& scene_player) {
+
+        WaterMeshComponent* mc = static_cast<WaterMeshComponent *>(parentObject->components[Mesh]);
+        std::vector<vertex>& vertices = mc->vertices;
+        std::vector<uint32_t>& indices = mc->indices;
+        std::vector<glm::vec3>& offsets = mc->offsets;
 
         glBindVertexArray(vao);
 
@@ -238,8 +93,6 @@ namespace yny {
     }
 
     WaterRenderComponent::WaterRenderComponent() {
-        wave_funcs.push_back({1, {1, 0}, 1, 1});
-        wave_funcs.push_back({1, {0.5, 1}, 1, 1});
 
         auto vertex_shader = create_shader(GL_VERTEX_SHADER, vertex_shader_source);
         auto fragment_shader = create_shader(GL_FRAGMENT_SHADER, fragment_shader_source);

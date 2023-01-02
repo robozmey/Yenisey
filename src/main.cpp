@@ -29,6 +29,9 @@
 #include "component/RigibodyComponent.h"
 #include "primitive/SphereRenderComponent.h"
 #include "WaterRenderComponent.h"
+#include "elevation/ElevationMeshComponent.h"
+#include "WaterMeshComponent.h"
+#include "primitive/SphereMeshComponent.h"
 
 
 int main() {
@@ -81,16 +84,19 @@ int main() {
 
     yny::Object sphere;
     sphere.add_component(yny::Rigibody);
-    sphere.add_component(yny::Render, new yny::SphereRenderComponent());
+    sphere.add_component(yny::Mesh, new yny::SphereMeshComponent());
+    sphere.add_component(yny::Render);
     reinterpret_cast<yny::TransformComponent *>(sphere.components[yny::Transform])->move({0, 0, 0});
     scene.add_object(&sphere);
 
     yny::Object elevation_object;
+    elevation_object.add_component(yny::Mesh, new yny::ElevationMeshComponent());
     elevation_object.add_component(yny::Render, new yny::ElevationRenderComponent());
     scene.add_object(&elevation_object);
 
     yny::Object waterObject;
     waterObject.add_component(yny::Rigibody);
+    waterObject.add_component(yny::Mesh, new yny::WaterMeshComponent());
     waterObject.add_component(yny::Render, new yny::WaterRenderComponent());
     scene.add_object(&waterObject);
 

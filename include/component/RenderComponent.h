@@ -22,13 +22,6 @@ namespace yny {
         GLuint vao, vbo, ebo;
         GLuint program;
 
-        std::vector<vertex> vertices;
-        std::vector<uint32_t> indices;
-
-        virtual void update_vertices(Player& scene_player);
-
-        void apply_transform();
-
         virtual void render(Player& scene_player);
 
         RenderComponent();

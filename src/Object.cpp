@@ -7,6 +7,7 @@
 #include "component/RenderComponent.h"
 #include "component/RigibodyComponent.h"
 #include "component/ColliderComponent.h"
+#include "component/MeshComponent.h"
 #include <iostream>
 
 namespace yny {
@@ -24,9 +25,9 @@ namespace yny {
             v.position = glm::vec3(transform * glm::vec4(v.position, 1));
         }
 
-        if (components.contains(Render)) {
-            RenderComponent* renderComponent = static_cast<RenderComponent *>(components[Render]);
-            renderComponent->apply_transform();
+        if (components.contains(Mesh)) {
+            MeshComponent* meshComponent = static_cast<MeshComponent *>(components[Mesh]);
+            meshComponent->apply_transform();
         }
 
         for (Object* obj : objects) {
@@ -35,9 +36,9 @@ namespace yny {
     }
 
     void Object::update_vertices(Player& scene_player) {
-        if (components.contains(Render)) {
-            RenderComponent* renderComponent = static_cast<RenderComponent *>(components[Render]);
-            renderComponent->update_vertices(scene_player);
+        if (components.contains(Mesh)) {
+            MeshComponent* meshComponent = static_cast<MeshComponent *>(components[Mesh]);
+            meshComponent->update_vertices(scene_player);
         }
 
         for (Object* obj : objects) {

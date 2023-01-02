@@ -6,6 +6,7 @@
 #include "component/RenderComponent.h"
 #include "tools.h"
 #include "component/TransformComponent.h"
+#include "component/MeshComponent.h"
 
 const char vertex_shader_source[] =
         R"(#version 330 core
@@ -73,23 +74,11 @@ void main()
 
 namespace yny {
 
-    void RenderComponent::apply_transform() {
-        TransformComponent* transform_component = reinterpret_cast<TransformComponent *>(parentObject->components[Transform]);
-
-        for (vertex& v : vertices) {
-            glm::mat4 transform = glm::mat4(1);
-            transform = glm::rotate(transform, transform_component->rotation.x, {1, 0, 0});
-            transform = glm::rotate(transform, transform_component->rotation.y, {0, 1, 0});
-            transform = glm::rotate(transform, transform_component->rotation.z, {0, 0, 1});
-            transform = glm::translate(transform, transform_component->position);
-
-            v.position = glm::vec3(transform * glm::vec4(v.position, 1));
-        }
-    }
-
-    void RenderComponent::update_vertices(Player& scene_player) {}
-
     void RenderComponent::render(Player& scene_player) {
+
+        MeshComponent* mc = static_cast<MeshComponent *>(parentObject->components[Mesh]);
+        std::vector<vertex>& vertices = mc->vertices;
+        std::vector<uint32_t>& indices = mc->indices;
 
         glBindVertexArray(vao);
 

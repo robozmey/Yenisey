@@ -12,10 +12,6 @@ namespace yny {
     class SphereRenderComponent : public RenderComponent {
     public:
 
-        void generate_sphere(float radius, int quality);
-
-        void update_vertices(Player& scene_player) override;
-
         SphereRenderComponent();
     };
 
