@@ -5,7 +5,7 @@
 #ifndef YENISEY_OBJECT_H
 #define YENISEY_OBJECT_H
 
-#include "Feature.h"
+#include "Component.h"
 #include "Player.h"
 
 #include <vector>
@@ -22,12 +22,20 @@ namespace yny {
 
     class Object {
     public:
-        std::vector<Feature> features;
+        std::map<ComponentType, Component*> components;
+
+        std::vector<Object*> objects;
 
         std::vector<vertex> vertices;
         std::vector<uint32_t> indices;
 
+        void apply_transform();
+
+        virtual void update_vertices(Player& scene_player);
         virtual void render(Player& scene_player);
+        virtual void update_time(Player& scene_player);
+
+        Object();
     };
 
 } // yny

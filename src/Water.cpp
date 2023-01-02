@@ -87,49 +87,132 @@ namespace yny {
         return res;
     }
 
-    void Water::render(Player& scene_player) {
-        int k = 10;
-        int r = 10;
-        int n = r * 2;
-        vertices.resize(n * n);
-        for (int i = 0; i < n; i++) {
-            for (int j = 0; j < n; j++) {
-                float time = scene_player.time;
-
-                float x = (i - r) * k;
-                float z = (j - r) * k;
-                float y = h(x, z, time) - 370;
-                vertex& v = vertices[i * n + j];
-                v.position = {x, y, z}; //
-
-                glm::vec3 b = {1, dhx(x, z, time), 0};
-                glm::vec3 t = {0, dhz(x, z, time), 1};
-
-                v.normal = glm::cross(b, t);
-                v.tangent = t;
-            }
-        }
-
+    void Water::update_vertices(Player& scene_player) {
+        int k = 50;
+        int r = 20;
+        int n = r * 2 + 1;
+        vertices.resize(lod_count * n * n);
         indices.clear();
-        for (int i = 1; i < n; i++) {
-            for (int j = 1; j < n; j++) {
-                indices.push_back(i * n + j);
-                indices.push_back((i) * n + j - 1);
-                indices.push_back((i - 1) * n + j);
+        for (int lod = 0; lod < lod_count; lod++) {
+            int lod_verteces_offset = n * n * lod;
+            for (int i = 0; i < n; i++) {
+                for (int j = 0; j < n; j++) {
+                    float time = scene_player.time;
 
-                indices.push_back((i - 1) * n + j - 1);
-                indices.push_back((i - 1) * n + j);
-                indices.push_back((i) * n + j - 1);
+                    float x = (i - r) * k * (1<<lod);
+                    float z = (j - r) * k * (1<<lod);
+                    float y = h(x, z, time) - 370;
+                    vertex &v = vertices[lod_verteces_offset + i * n + j];
+                    v.position = {x, y, z}; //
+
+                    glm::vec3 b = {1, dhx(x, z, time), 0};
+                    glm::vec3 t = {0, dhz(x, z, time), 1};
+
+                    v.normal = glm::cross(b, t);
+                    v.tangent = t;
+                }
+            }
+
+            for (int i = 1; i < n; i++) {
+                for (int j = 1; j < n; j++) {
+                    if (lod == 0 || abs(i - r - 0.5) * 2 > r + 1 || abs(j - r - 0.5) * 2 > r + 1) {
+                        indices.push_back(lod_verteces_offset + i * n + j);
+                        indices.push_back(lod_verteces_offset + (i) * n + j - 1);
+                        indices.push_back(lod_verteces_offset + (i - 1) * n + j);
+
+                        indices.push_back(lod_verteces_offset + (i - 1) * n + j - 1);
+                        indices.push_back(lod_verteces_offset + (i - 1) * n + j);
+                        indices.push_back(lod_verteces_offset + (i) * n + j - 1);
+                    }
+                }
+            }
+            int pr_lod_verteces_offset = n * n * (lod - 1);
+            if (lod > 0) {
+                for (int t = 0; t < 2; t++) {
+                    int i = 3 * r / 2 + 1;
+                    int pr_i = n - 1;
+                    if (t == 1) {
+                        i = r / 2 - 1;
+                        pr_i = 0;
+                    }
+                    for (int t2 = 0; t2 < 2; t2++) {
+                        int j = r / 2;
+                        if (t2 == 1) {
+                            j = 3 * r / 2;
+                        }
+                        indices.push_back(lod_verteces_offset + i * n + j + 1 - (1 - t2));
+                        indices.push_back(lod_verteces_offset + i * n + j - (1 - t2));
+                        indices.push_back(pr_lod_verteces_offset + pr_i * n + (j - r / 2) * 2);
+                        if (t == 1) {
+                            std::swap(indices[indices.size() - 2], indices[indices.size() - 1]);
+                        }
+
+                        indices.push_back(lod_verteces_offset + (j + 1 - (1 - t2)) * n + i);
+                        indices.push_back(lod_verteces_offset + (j - (1 - t2)) * n + i);
+                        indices.push_back(pr_lod_verteces_offset + ((j - r / 2) * 2) * n + pr_i);
+                        if (t == 0) {
+                            std::swap(indices[indices.size() - 2], indices[indices.size() - 1]);
+                        }
+                    }
+
+                    for (int j = r / 2 + 1; j < n - r / 2; j++) {
+                        indices.push_back(lod_verteces_offset + i * n + j);
+                        indices.push_back(lod_verteces_offset + i * n + j - 1);
+                        indices.push_back(pr_lod_verteces_offset + pr_i * n + (j - r / 2) * 2 - 1);
+                        if (t == 1) {
+                            std::swap(indices[indices.size() - 2], indices[indices.size() - 1]);
+                        }
+
+                        indices.push_back(lod_verteces_offset + i * n + j - 1);
+                        indices.push_back(pr_lod_verteces_offset + pr_i * n + (j - r / 2) * 2 - 2);
+                        indices.push_back(pr_lod_verteces_offset + pr_i * n + (j - r / 2) * 2 - 1);
+                        if (t == 1) {
+                            std::swap(indices[indices.size() - 2], indices[indices.size() - 1]);
+                        }
+
+                        indices.push_back(lod_verteces_offset + i * n + j);
+                        indices.push_back(pr_lod_verteces_offset + pr_i * n + (j - r / 2) * 2 - 1);
+                        indices.push_back(pr_lod_verteces_offset + pr_i * n + (j - r / 2) * 2);
+                        if (t == 1) {
+                            std::swap(indices[indices.size() - 2], indices[indices.size() - 1]);
+                        }
+
+
+                        indices.push_back(lod_verteces_offset + (j - 1) * n + i);
+                        indices.push_back(lod_verteces_offset + j * n + i);
+                        indices.push_back(pr_lod_verteces_offset + ((j - r / 2) * 2 - 1) * n + pr_i);
+                        if (t == 1) {
+                            std::swap(indices[indices.size() - 2], indices[indices.size() - 1]);
+                        }
+
+                        indices.push_back(lod_verteces_offset + (j - 1) * n + i);
+                        indices.push_back(pr_lod_verteces_offset + ((j - r / 2) * 2 - 1) * n + pr_i);
+                        indices.push_back(pr_lod_verteces_offset + ((j - r / 2) * 2 - 2) * n + pr_i);
+                        if (t == 1) {
+                            std::swap(indices[indices.size() - 2], indices[indices.size() - 1]);
+                        }
+
+                        indices.push_back(lod_verteces_offset + (j) * n + i);
+                        indices.push_back(pr_lod_verteces_offset + ((j - r / 2) * 2) * n + pr_i);
+                        indices.push_back(pr_lod_verteces_offset + ((j - r / 2) * 2 - 1) * n + pr_i);
+                        if (t == 1) {
+                            std::swap(indices[indices.size() - 2], indices[indices.size() - 1]);
+                        }
+                    }
+                }
             }
         }
 
-        int offset_n = 50;
-        std::vector<glm::vec3> offsets(offset_n * offset_n);
+        int offset_n = 0;
+        offsets.clear();
         for (int i = -offset_n; i <= offset_n; i++) {
             for (int j = -offset_n; j <= offset_n; j++) {
-                offsets.push_back({i * (n - 1) * k, 0, j * (n - 1) * k});
+                offsets.emplace_back(i * (n - 1) * k, 0, j * (n - 1) * k);
             }
         }
+    }
+
+    void Water::render(Player& scene_player) {
 
         glBindVertexArray(vao);
 

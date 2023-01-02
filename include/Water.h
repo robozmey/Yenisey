@@ -40,7 +40,9 @@ namespace yny {
         GLuint projection_location;
         GLuint light_direction_location;
 
+        std::vector<glm::vec3> offsets;
         GLuint offsets_vbo;
+
         GLuint vao, vbo, ebo;
         GLuint program;
 
@@ -48,6 +50,10 @@ namespace yny {
         float h(float x, float z, float t);
         float dhx(float x, float z, float t);
         float dhz(float x, float z, float t);
+
+        int lod_count = 6;
+
+        void update_vertices(Player& scene_player) override;
 
         void render(Player& scene_player) override;
 

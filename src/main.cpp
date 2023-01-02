@@ -25,6 +25,7 @@
 #include "Scene.h"
 #include "Skybox.h"
 #include "ElevationObject.h"
+#include "TransformComponent.h"
 #include "Water.h"
 
 
@@ -79,6 +80,8 @@ int main() {
     yny::ElevationObject elevation_object;
     scene.objects.push_back(reinterpret_cast<yny::Object *>(&elevation_object));
     yny::Water water;
+    yny::TransformComponent* tc = reinterpret_cast<yny::TransformComponent *>(water.components[yny::Transform]);
+    tc->rotate({0, 0, 0});
     scene.objects.push_back(reinterpret_cast<yny::Object *>(&water));
 
     bool running = true;
@@ -117,6 +120,10 @@ int main() {
 
         scene.player.move(button_down, time);
         scene.player.update_screen(width, height);
+
+        scene.update_time();
+        scene.update_vertices();
+
         scene.render();
 
         SDL_GL_SwapWindow(window);

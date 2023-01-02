@@ -6,6 +6,16 @@
 #include "Scene.h"
 
 namespace yny {
+    void Scene::update_vertices() {
+        for (Object* object : objects) {
+            object->update_vertices(player);
+        }
+
+//        for (Object* object : objects) {
+//            object->apply_transform();
+//        }
+    }
+
     void Scene::render() {
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -20,10 +30,11 @@ namespace yny {
             object->render(player);
         }
 
-        glClear(GL_DEPTH_BUFFER_BIT);
+    }
 
-        for (Object* ui_element : ui) {
-            ui_element->render(player);
+    void Scene::update_time() {
+        for (Object* object : objects) {
+            object->update_time(player);
         }
     }
 } // yny

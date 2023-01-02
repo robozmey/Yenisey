@@ -76,7 +76,7 @@ RECENT REVISION HISTORY:
 
  ============================    Contributors    =========================
 
- Image formats                          Extensions, features
+ Image formats                          Extensions, Components
     Sean Barrett (jpeg, png, bmp)          Jetro Lauha (stbi_info)
     Nicolas Schulz (hdr, psd)              Martin "SpartanJ" Golini (stbi_info)
     Jonathan Dummer (tga)                  James "moose2000" Brown (iPhone PNG)
