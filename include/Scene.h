@@ -23,6 +23,8 @@ namespace yny {
         void render();
 
         void update_time();
+
+        Scene();
     };
 
 } // yny

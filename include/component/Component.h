@@ -23,6 +23,7 @@ namespace yny {
         Transform,
         Rigibody,
         Render,
+        Collider
     };
 
     class Component {

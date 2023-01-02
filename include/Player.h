@@ -34,7 +34,7 @@ namespace yny {
         float rotation_speed = 1;
         float movement_speed = 100;
 
-        glm::vec3 inner_camera_position = glm::vec3(0, -8000, -100);
+        glm::vec3 inner_camera_position = glm::vec3(0, -800, -100);
         glm::vec3 camera_rotation = glm::vec3(0.5, 0, 0);
         glm::vec3 camera_direction, side_direction;
 

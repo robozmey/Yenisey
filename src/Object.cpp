@@ -6,6 +6,7 @@
 #include "component/TransformComponent.h"
 #include "component/RenderComponent.h"
 #include "component/RigibodyComponent.h"
+#include "component/ColliderComponent.h"
 #include <iostream>
 
 namespace yny {
@@ -22,14 +23,36 @@ namespace yny {
 
             v.position = glm::vec3(transform * glm::vec4(v.position, 1));
         }
+
+        if (components.contains(Render)) {
+            RenderComponent* renderComponent = static_cast<RenderComponent *>(components[Render]);
+            renderComponent->apply_transform();
+        }
+
+        for (Object* obj : objects) {
+            obj->apply_transform();
+        }
     }
 
-    void Object::update_vertices(Player& scene_player) {}
+    void Object::update_vertices(Player& scene_player) {
+        if (components.contains(Render)) {
+            RenderComponent* renderComponent = static_cast<RenderComponent *>(components[Render]);
+            renderComponent->update_vertices(scene_player);
+        }
+
+        for (Object* obj : objects) {
+            obj->update_vertices(scene_player);
+        }
+    }
 
     void Object::render(Player& scene_player) {
         if (components.contains(Render)) {
             RenderComponent* renderComponent = static_cast<RenderComponent *>(components[Render]);
             renderComponent->render(scene_player);
+        }
+
+        for (Object* obj : objects) {
+            obj->render(scene_player);
         }
     }
 
@@ -37,7 +60,10 @@ namespace yny {
         if (components.contains(Rigibody)) {
             yny::RigibodyComponent* rc = reinterpret_cast<yny::RigibodyComponent *>(components[yny::Rigibody]);
             rc->move(scene_player.dt);
+        }
 
+        for (Object* obj : objects) {
+            obj->update_time(scene_player);
         }
     }
 
@@ -59,6 +85,21 @@ namespace yny {
     void Object::add_component(ComponentType type, Component* ptr) {
         components[type] = ptr;
         components[type]->parentObject = this;
+    }
+
+    void Object::add_object(Object* obj) {
+        obj->parentObject = this;
+        obj->scene = scene;
+        objects.push_back(obj);
+    }
+
+    bool Object::is_collide(Object* other) {
+        if (components.contains(Collider) && other->components.contains(Collider)) {
+            yny::ColliderComponent* cc1 = reinterpret_cast<yny::ColliderComponent *>(components[yny::Collider]);
+            yny::ColliderComponent* cc2 = reinterpret_cast<yny::ColliderComponent *>(other->components[yny::Collider]);
+            return cc1->is_collide(cc2);
+        }
+        return false;
     }
 
     Object::Object() {

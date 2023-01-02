@@ -1,8 +1,8 @@
 //
-// Created by vladimir on 30.12.22.
+// Created by vladimir on 02.01.23.
 //
 
-#include "Water.h"
+#include "WaterRenderComponent.h"
 #include "tools.h"
 
 const char vertex_shader_source[] =
@@ -63,7 +63,7 @@ float cross2(glm::vec2 a, glm::vec2 b) {
 }
 
 namespace yny {
-    float Water::h(float x, float z, float t) {
+    float WaterRenderComponent::h(float x, float z, float t) {
         float res = 0;
         for (auto wf : wave_funcs) {
             res += wf.amplitude * sin(cross2(wf.direction, glm::vec2(x, z)) * wf.wavelength + t * wf.phase_constant);
@@ -71,7 +71,7 @@ namespace yny {
         return res;
     }
 
-    float Water::dhx(float x, float z, float t) {
+    float WaterRenderComponent::dhx(float x, float z, float t) {
         float res = 0;
         for (auto wf : wave_funcs) {
             res += wf.wavelength * wf.direction.x * wf.amplitude * cos(cross2(wf.direction, glm::vec2(x, z)) * wf.wavelength + t * wf.phase_constant);
@@ -79,7 +79,7 @@ namespace yny {
         return res;
     }
 
-    float Water::dhz(float x, float z, float t) {
+    float WaterRenderComponent::dhz(float x, float z, float t) {
         float res = 0;
         for (auto wf : wave_funcs) {
             res += wf.wavelength * wf.direction.y * wf.amplitude * cos(cross2(wf.direction, glm::vec2(x, z)) * wf.wavelength + t * wf.phase_constant);
@@ -87,7 +87,7 @@ namespace yny {
         return res;
     }
 
-    void Water::update_vertices(Player& scene_player) {
+    void WaterRenderComponent::update_vertices(Player& scene_player) {
         int k = 50;
         int r = 20;
         int n = r * 2 + 1;
@@ -212,7 +212,7 @@ namespace yny {
         }
     }
 
-    void Water::render(Player& scene_player) {
+    void WaterRenderComponent::render(Player& scene_player) {
 
         glBindVertexArray(vao);
 
@@ -237,7 +237,7 @@ namespace yny {
         glDrawElementsInstanced(GL_TRIANGLES, indices.size(),  GL_UNSIGNED_INT, nullptr, offsets.size());
     }
 
-    Water::Water() {
+    WaterRenderComponent::WaterRenderComponent() {
         wave_funcs.push_back({1, {1, 0}, 1, 1});
         wave_funcs.push_back({1, {0.5, 1}, 1, 1});
 

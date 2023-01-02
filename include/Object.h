@@ -12,10 +12,14 @@
 
 namespace yny {
 
+    class Scene;
+
     class Object {
     public:
         std::map<ComponentType, Component*> components;
 
+        Scene* scene;
+        Object* parentObject;
         std::vector<Object*> objects;
 
         std::vector<vertex> vertices;
@@ -25,10 +29,14 @@ namespace yny {
 
         virtual void update_vertices(Player& scene_player);
         virtual void render(Player& scene_player);
-        virtual void update_time(Player& scene_player);
+        void update_time(Player& scene_player);
+
+        void add_object(Object*);
 
         void add_component(ComponentType);
         void add_component(ComponentType, Component*);
+
+        bool is_collide(Object*);
 
         Object();
     };

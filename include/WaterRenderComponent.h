@@ -1,24 +1,14 @@
 //
-// Created by vladimir on 30.12.22.
+// Created by vladimir on 02.01.23.
 //
 
-#ifndef YENISEY_WATER_H
-#define YENISEY_WATER_H
-
-
-#ifdef WIN32
-#include <SDL.h>
-#undef main
-#else
-#include <SDL2/SDL.h>
-#endif
-
-#include <GL/glew.h>
+#ifndef YENISEY_WATERRENDERCOMPONENT_H
+#define YENISEY_WATERRENDERCOMPONENT_H
 
 #include "elevation/elevation.h"
 #include "Object.h"
 #include "Player.h"
-
+#include "component/RenderComponent.h"
 
 namespace yny {
 
@@ -29,7 +19,7 @@ namespace yny {
         float phase_constant;
     };
 
-    class Water : public Object {
+    class WaterRenderComponent : public RenderComponent {
     public:
         glm::vec3 p1, p2;
 
@@ -51,16 +41,16 @@ namespace yny {
         float dhx(float x, float z, float t);
         float dhz(float x, float z, float t);
 
-        int lod_count = 6;
+        int lod_count = 3;
 
         void update_vertices(Player& scene_player) override;
 
         void render(Player& scene_player) override;
 
-        Water();
+        WaterRenderComponent();
 
     };
 
 } // yny
 
-#endif //YENISEY_WATER_H
+#endif //YENISEY_WATERRENDERCOMPONENT_H

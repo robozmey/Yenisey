@@ -7,13 +7,10 @@
 
 namespace yny {
     void Scene::update_vertices() {
-        for (Object* object : objects) {
-            object->update_vertices(player);
-        }
 
-        for (Object* object : objects) {
-            object->apply_transform();
-        }
+        this->Object::update_vertices(player);
+
+        this->apply_transform();
     }
 
     void Scene::render() {
@@ -26,15 +23,15 @@ namespace yny {
 
         glClear(GL_DEPTH_BUFFER_BIT);
 
-        for (Object* object : objects) {
-            object->render(player);
-        }
+        this->Object::render(player);
 
     }
 
     void Scene::update_time() {
-        for (Object* object : objects) {
-            object->update_time(player);
-        }
+        this->Object::update_time(player);
+    }
+
+    Scene::Scene() {
+        scene = this;
     }
 } // yny
