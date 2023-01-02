@@ -7,6 +7,7 @@
 
 #include "component/RenderComponent.h"
 #include "elevation.h"
+#include "ElevationDataObject.h"
 
 namespace yny {
 
@@ -23,8 +24,8 @@ namespace yny {
 
         GLuint light_direction_location;
 
-        int lod_count = 4;
-        std::vector<elevation_map_t> elevation_map_lod;
+        int lod_count = 1;
+        ElevationDataObject* elevationDataObject;
         GLuint vao, vbo, ebo;
         GLuint program;
 

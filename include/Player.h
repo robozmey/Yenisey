@@ -31,9 +31,9 @@ namespace yny {
         float time = 0;
 
         float rotation_speed = 1;
-        float movement_speed = 10;
+        float movement_speed = 100;
 
-        glm::vec3 inner_camera_position = glm::vec3(0, -200, -100);
+        glm::vec3 inner_camera_position = glm::vec3(0, -8000, -100);
         glm::vec3 camera_rotation = glm::vec3(0.5, 0, 0);
         glm::vec3 camera_direction, side_direction;
 
@@ -47,7 +47,7 @@ namespace yny {
         int latitude_minute = 29, longitude_minute = 30;
 
         float near = 0.1f;
-        float far = 100000.f;
+        float far = 1000000.f;
 
         int width, height;
 

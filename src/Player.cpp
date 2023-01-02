@@ -73,10 +73,10 @@ namespace yny {
         if (abs(inner_camera_position.z) > max_dist_z) {
             if (inner_camera_position.z > max_dist_z) {
                 inner_camera_position.z -= max_dist_z;
-                longitude_minute -= 1;
+                longitude_minute += 1;
             } else {
                 inner_camera_position.z += max_dist_z;
-                longitude_minute += 1;
+                longitude_minute -= 1;
             }
         }
 

@@ -18,8 +18,9 @@ namespace yny {
     const int ELEVATION_MAP_SIZE = 3601;
 
     #define elevation_map_t std::vector<std::vector<uint16_t>>
+    #define lod_elevation_map_t std::vector<elevation_map_t>
 
-    void upload_elevation_map(int latitude, int longitude, elevation_map_t &elevation_map) ;
+    void upload_elevation_map(int latitude, int longitude, elevation_map_t &elevation_map);
 
     GLuint load_elevation_texture(elevation_map_t &elevation_map);
 }

@@ -101,10 +101,15 @@ namespace yny {
             for (int i = 0; i < diam_size; i++) {
                 for (int j = 0; j < diam_size; j++) {
                     int latitude_second = (i - diam_seconds) + latitude_seconds / diam_step;
-                    int longitude_second = (j - diam_seconds) + longitude_seconds / diam_step;
+                    int longitude_second = -(j - diam_seconds) + longitude_seconds / diam_step;
 
                     float x = (i - diam_seconds) * diam_step * latitude_factor;
-                    float y = float(elevation_map_lod[lod][latitude_second][longitude_second]) - 600; //(lod_count-1 - lod) * 100
+                    float ed = elevationDataObject->get_data(scene_player.latitude,
+                                                             scene_player.longitude,
+                                                             lod,
+                                                             latitude_second,
+                                                             longitude_second);
+                    float y = ed - 600; //(lod_count-1 - lod) * 100
                     float z = (j - diam_seconds) * diam_step * longitude_factor;
                     vertex v;
                     v.position = {x, y, z}; //
@@ -267,6 +272,10 @@ namespace yny {
     }
 
     ElevationRenderComponent::ElevationRenderComponent() {
+
+        elevationDataObject = new ElevationDataObject();
+        lod_count = elevationDataObject->lod_count;
+
         std::string project_root = PROJECT_ROOT;
         grass_texture = load_texture(project_root + "/texture/grass.png");
         grass_normal_texture = load_texture(project_root + "/texture/grass_normal.png");
@@ -282,36 +291,6 @@ namespace yny {
         projection_location = glGetUniformLocation(program, "projection");
 
         light_direction_location = glGetUniformLocation(program, "light_direction");
-
-        elevation_map_lod.resize(lod_count);
-
-        upload_elevation_map(55, 92, elevation_map_lod[0]);
-
-        for (int lod = 1; lod < lod_count; lod++) {
-            int pr_height = elevation_map_lod[lod-1].size();
-            int pr_width = elevation_map_lod[lod-1][0].size();
-            int height = (pr_height + 1) / 2;
-            int width = (pr_width + 1) / 2;
-
-            elevation_map_lod[lod].assign(height, std::vector<uint16_t>(width));
-            for (int i = 0; i < height; i++) {
-                for (int j = 0; j < width; j++) {
-                    int val = 0;
-                    int count = 0;
-                    for (int i1 = 0; i1 < 2; i1++) {
-                        for (int j1 = 0; j1 < 2; j1++) {
-                            if (i*2 + i1 < pr_height && j*2 + j1 < pr_width) {
-                                val += elevation_map_lod[lod-1][i*2 + i1][j*2 + j1];
-                                count++;
-                            }
-                        }
-                    }
-                    elevation_map_lod[lod][i][j] = val / count;
-                }
-            }
-        }
-
-//        elevation_texture = load_elevation_texture(elevation_map_lod[4]);
 
         glGenVertexArrays(1, &vao);
         glGenBuffers(1, &vbo);

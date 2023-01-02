@@ -30,7 +30,7 @@ add_executable(Yenisey
         src/tools.cpp
         src/Skybox.cpp
         src/stb_image.c
-        src/Water.cpp src/TransformComponent.cpp src/RenderComponent.cpp src/ElevationRenderComponent.cpp)
+        src/Water.cpp src/TransformComponent.cpp src/RenderComponent.cpp src/ElevationRenderComponent.cpp src/ElevationDataObject.cpp)
 
 target_include_directories(${TARGET_NAME} PUBLIC
         include
