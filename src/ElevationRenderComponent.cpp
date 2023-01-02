@@ -1,9 +1,8 @@
 //
-// Created by vladimir on 28.12.22.
+// Created by vladimir on 02.01.23.
 //
 
-#include <array>
-#include "ElevationObject.h"
+#include "component/ElevationRenderComponent.h"
 #include "tools.h"
 
 const char vertex_shader_source[] =
@@ -70,13 +69,9 @@ void main()
 }
 )";
 
-glm::vec3 get_triangle_normal(glm::vec3 a, glm::vec3 b, glm::vec3 c) {
-    return glm::cross(b-a, c-a);
-}
-
-
 namespace yny {
-    void ElevationObject::recalc_terrain(Player& scene_player) {
+
+    void ElevationRenderComponent::recalc_terrain(Player& scene_player) {
         int latitude_seconds = scene_player.latitude_minute * 60;
         int longitude_seconds = scene_player.longitude_minute * 60;
         float center_latitude_grad = scene_player.latitude + latitude_seconds / 3600.f;
@@ -119,7 +114,7 @@ namespace yny {
             for (int i = 1; i < diam_size; i++) {
                 for (int j = 1; j < diam_size; j++) {
                     if (lod == 0 || abs(i-0.5 - diam_seconds) * 2 > diam_seconds+1
-                                 || abs(j-0.5 - diam_seconds) * 2 > diam_seconds+1) {
+                        || abs(j-0.5 - diam_seconds) * 2 > diam_seconds+1) {
                         indices.push_back(lod_verteces_offset + i * diam_size + j);
                         indices.push_back(lod_verteces_offset + (i) * diam_size + j - 1);
                         indices.push_back(lod_verteces_offset + (i - 1) * diam_size + j);
@@ -226,7 +221,7 @@ namespace yny {
                         if (0 <= i + i1 && i + i1 < diam_size) {
                             glm::vec3 tmp_tangent = {0, 0, 0};
                             tmp_tangent.x = vertices[lod_verteces_offset + i * diam_size + j].position.x
-                                    - vertices[lod_verteces_offset + (i + i1) * diam_size + j].position.x;
+                                            - vertices[lod_verteces_offset + (i + i1) * diam_size + j].position.x;
                             tangent_sum += tmp_tangent;
                             tangent_count++;
                         }
@@ -245,7 +240,7 @@ namespace yny {
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(indices[0]), indices.data(), GL_STATIC_DRAW);
     }
 
-    void ElevationObject::render(Player& scene_player)  {
+    void ElevationRenderComponent::render(Player& scene_player)  {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, grass_texture);
         glActiveTexture(GL_TEXTURE1);
@@ -271,8 +266,7 @@ namespace yny {
         glDrawElements(GL_TRIANGLES, indices.size(),  GL_UNSIGNED_INT, nullptr);
     }
 
-    ElevationObject::ElevationObject() {
-
+    ElevationRenderComponent::ElevationRenderComponent() {
         std::string project_root = PROJECT_ROOT;
         grass_texture = load_texture(project_root + "/texture/grass.png");
         grass_normal_texture = load_texture(project_root + "/texture/grass_normal.png");

@@ -5,20 +5,12 @@
 #ifndef YENISEY_OBJECT_H
 #define YENISEY_OBJECT_H
 
-#include "Component.h"
+#include "component/Component.h"
 #include "Player.h"
 
 #include <vector>
 
 namespace yny {
-
-    struct vertex
-    {
-        glm::vec3 position;
-        glm::vec3 normal;
-        glm::vec3 tangent;
-        glm::vec2 texcoord;
-    };
 
     class Object {
     public:

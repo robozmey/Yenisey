@@ -26,12 +26,11 @@ add_executable(Yenisey
         src/Scene.cpp
         src/Object.cpp
         src/Player.cpp
-        src/ElevationObject.cpp
         src/elevation.cpp
         src/tools.cpp
         src/Skybox.cpp
         src/stb_image.c
-        src/Water.cpp src/TransformComponent.cpp)
+        src/Water.cpp src/TransformComponent.cpp src/RenderComponent.cpp src/ElevationRenderComponent.cpp)
 
 target_include_directories(${TARGET_NAME} PUBLIC
         include

@@ -1,26 +1,16 @@
 //
-// Created by vladimir on 28.12.22.
+// Created by vladimir on 02.01.23.
 //
 
-#ifndef YENISEY_ELEVATIONOBJECT_H
-#define YENISEY_ELEVATIONOBJECT_H
+#ifndef YENISEY_ELEVATIONRENDERCOMPONENT_H
+#define YENISEY_ELEVATIONRENDERCOMPONENT_H
 
-#ifdef WIN32
-#include <SDL.h>
-#undef main
-#else
-#include <SDL2/SDL.h>
-#endif
-
-#include <GL/glew.h>
-
+#include "component/RenderComponent.h"
 #include "elevation.h"
-#include "Object.h"
-#include "Player.h"
 
 namespace yny {
 
-    class ElevationObject : public Object {
+    class ElevationRenderComponent : public RenderComponent {
     public:
         GLuint grass_texture;
         GLuint grass_normal_texture;
@@ -42,11 +32,13 @@ namespace yny {
 
         void render(Player& scene_player) override;
 
-        ElevationObject();
+        ElevationRenderComponent();
+
     private:
         void recalc_terrain(Player& scene_player);
+
     };
 
 } // yny
 
-#endif //YENISEY_ELEVATIONOBJECT_H
+#endif //YENISEY_ELEVATIONRENDERCOMPONENT_H

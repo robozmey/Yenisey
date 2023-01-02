@@ -1,6 +1,10 @@
 #include "tools.h"
 #include "stb_image.h"
 
+glm::vec3 get_triangle_normal(glm::vec3 a, glm::vec3 b, glm::vec3 c) {
+    return glm::cross(b-a, c-a);
+}
+
 std::string to_string(std::string_view str)
 {
     return std::string(str.begin(), str.end());

@@ -2,7 +2,7 @@
 // Created by vladimir on 31.12.22.
 //
 
-#include "TransformComponent.h"
+#include "component/TransformComponent.h"
 
 namespace yny {
     TransformComponent::TransformComponent() {}

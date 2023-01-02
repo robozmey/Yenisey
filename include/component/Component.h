@@ -5,11 +5,23 @@
 #ifndef YENISEY_Component_H
 #define YENISEY_Component_H
 
+#include "glm/vec3.hpp"
+#include "glm/vec2.hpp"
+
 namespace yny {
+
+    struct vertex
+    {
+        glm::vec3 position;
+        glm::vec3 normal;
+        glm::vec3 tangent;
+        glm::vec2 texcoord;
+    };
 
     enum ComponentType {
         Transform,
-        Rigibody
+        Rigibody,
+        Render,
     };
 
     class Component {

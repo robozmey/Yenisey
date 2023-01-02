@@ -3,7 +3,8 @@
 //
 
 #include "Object.h"
-#include "TransformComponent.h"
+#include "component/TransformComponent.h"
+#include "component/RenderComponent.h"
 #include <iostream>
 
 namespace yny {
@@ -24,7 +25,12 @@ namespace yny {
 
     void Object::update_vertices(Player& scene_player) {}
 
-    void Object::render(Player& scene_player) {}
+    void Object::render(Player& scene_player) {
+        if (components.contains(Render)) {
+            RenderComponent* renderComponent = static_cast<RenderComponent *>(components[Render]);
+            renderComponent->render(scene_player);
+        }
+    }
 
     void Object::update_time(Player& scene_player) {}
 

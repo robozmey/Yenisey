@@ -5,7 +5,7 @@
 #ifndef YENISEY_TRANSFORMCOMPONENT_H
 #define YENISEY_TRANSFORMCOMPONENT_H
 
-#include "Component.h"
+#include "component/Component.h"
 #include "glm/vec3.hpp"
 
 namespace yny {
