@@ -15,7 +15,7 @@
 
 #include <GL/glew.h>
 
-#include "elevation.h"
+#include "elevation/elevation.h"
 #include "Object.h"
 #include "Player.h"
 

@@ -24,7 +24,7 @@ namespace yny {
 
     void Player::move(std::map<SDL_Keycode, bool> button_down, float new_time) {
 
-        float dt = new_time - time;
+        dt = new_time - time;
         time = new_time;
 
         if (button_down[SDLK_UP])

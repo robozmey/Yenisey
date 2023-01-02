@@ -29,6 +29,7 @@ namespace yny {
     class Player {
     public:
         float time = 0;
+        float dt = 0;
 
         float rotation_speed = 1;
         float movement_speed = 100;

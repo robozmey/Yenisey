@@ -13,7 +13,7 @@ namespace yny {
         position += movement;
     }
 
-    void TransformComponent::rotate(glm::vec3 rotation1) {
-        rotation += rotation1;
+    void TransformComponent::rotate(glm::vec3 additional_rotation) {
+        rotation += additional_rotation;
     }
 } // yny

@@ -2,7 +2,7 @@
 // Created by vladimir on 02.01.23.
 //
 
-#include "ElevationDataObject.h"
+#include "elevation/ElevationDataObject.h"
 
 namespace yny {
 

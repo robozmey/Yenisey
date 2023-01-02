@@ -25,8 +25,9 @@
 #include "Scene.h"
 #include "Skybox.h"
 #include "component/TransformComponent.h"
-#include "component/ElevationRenderComponent.h"
+#include "elevation/ElevationRenderComponent.h"
 #include "Water.h"
+#include "component/RigibodyComponent.h"
 
 
 int main() {
@@ -78,12 +79,11 @@ int main() {
     scene.skybox = yny::Skybox();
 
     yny::Object elevation_object;
-    elevation_object.components[yny::Render] = new yny::ElevationRenderComponent();
+    elevation_object.add_component(yny::Render, new yny::ElevationRenderComponent());
     scene.objects.push_back(&elevation_object);
 
     yny::Water water;
-    yny::TransformComponent* tc = reinterpret_cast<yny::TransformComponent *>(water.components[yny::Transform]);
-    tc->rotate({0, 0, 0});
+    water.add_component(yny::Rigibody);
     scene.objects.push_back(reinterpret_cast<yny::Object *>(&water));
 
     bool running = true;

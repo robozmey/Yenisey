@@ -2,7 +2,7 @@
 // Created by vladimir on 02.01.23.
 //
 
-#include "component/ElevationRenderComponent.h"
+#include "elevation/ElevationRenderComponent.h"
 #include "tools.h"
 
 const char vertex_shader_source[] =

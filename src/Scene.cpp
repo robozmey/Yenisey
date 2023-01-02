@@ -11,9 +11,9 @@ namespace yny {
             object->update_vertices(player);
         }
 
-//        for (Object* object : objects) {
-//            object->apply_transform();
-//        }
+        for (Object* object : objects) {
+            object->apply_transform();
+        }
     }
 
     void Scene::render() {

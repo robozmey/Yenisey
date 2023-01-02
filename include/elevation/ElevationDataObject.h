@@ -5,14 +5,14 @@
 #ifndef YENISEY_ELEVATIONDATAOBJECT_H
 #define YENISEY_ELEVATIONDATAOBJECT_H
 
-#include "elevation.h"
+#include "elevation/elevation.h"
 #include <map>
 
 namespace yny {
 
     class ElevationDataObject {
     public:
-        int lod_count = 5;
+        int lod_count = 2;
 
         float get_data(int latitude, int longitude, int lod, int i, int j);
 

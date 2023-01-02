@@ -2,7 +2,7 @@
 #include <vector>
 #include <iostream>
 
-#include "elevation.h"
+#include "elevation/elevation.h"
 
 namespace yny {
 

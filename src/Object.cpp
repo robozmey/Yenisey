@@ -5,6 +5,7 @@
 #include "Object.h"
 #include "component/TransformComponent.h"
 #include "component/RenderComponent.h"
+#include "component/RigibodyComponent.h"
 #include <iostream>
 
 namespace yny {
@@ -32,7 +33,33 @@ namespace yny {
         }
     }
 
-    void Object::update_time(Player& scene_player) {}
+    void Object::update_time(Player& scene_player) {
+        if (components.contains(Rigibody)) {
+            yny::RigibodyComponent* rc = reinterpret_cast<yny::RigibodyComponent *>(components[yny::Rigibody]);
+            rc->move(scene_player.dt);
+
+        }
+    }
+
+    void Object::add_component(ComponentType type) {
+        switch (type) {
+            case Transform:
+                components[type] = new TransformComponent();
+                break;
+            case Render:
+                components[type] = new RenderComponent();
+                break;
+            case Rigibody:
+                components[type] = new RigibodyComponent();
+                break;
+        };
+        components[type]->parentObject = this;
+    }
+
+    void Object::add_component(ComponentType type, Component* ptr) {
+        components[type] = ptr;
+        components[type]->parentObject = this;
+    }
 
     Object::Object() {
         components[Transform] = new TransformComponent();

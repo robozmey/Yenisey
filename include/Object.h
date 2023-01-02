@@ -27,6 +27,9 @@ namespace yny {
         virtual void render(Player& scene_player);
         virtual void update_time(Player& scene_player);
 
+        void add_component(ComponentType);
+        void add_component(ComponentType, Component*);
+
         Object();
     };
 

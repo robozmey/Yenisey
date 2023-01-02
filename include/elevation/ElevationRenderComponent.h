@@ -6,8 +6,8 @@
 #define YENISEY_ELEVATIONRENDERCOMPONENT_H
 
 #include "component/RenderComponent.h"
-#include "elevation.h"
-#include "ElevationDataObject.h"
+#include "elevation/elevation.h"
+#include "elevation/ElevationDataObject.h"
 
 namespace yny {
 

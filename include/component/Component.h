@@ -9,6 +9,7 @@
 #include "glm/vec2.hpp"
 
 namespace yny {
+    class Object;
 
     struct vertex
     {
@@ -25,6 +26,8 @@ namespace yny {
     };
 
     class Component {
+    public:
+        Object* parentObject;
         ComponentType type;
     };
 
