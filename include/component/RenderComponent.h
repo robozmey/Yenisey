@@ -18,6 +18,7 @@ namespace yny {
         GLuint model_location;
         GLuint view_location;
         GLuint projection_location;
+        GLuint transform_location;
 
         GLuint vao, vbo, ebo;
         GLuint program;

@@ -7,6 +7,7 @@
 
 #include "component/Component.h"
 #include "glm/vec3.hpp"
+#include "glm/ext/matrix_transform.hpp"
 
 namespace yny {
 
@@ -25,6 +26,8 @@ namespace yny {
 
         void move(glm::vec3 movement);
         void rotate(glm::vec3 rotation1);
+
+        glm::mat4 get_transform();
     };
 
 } // yny

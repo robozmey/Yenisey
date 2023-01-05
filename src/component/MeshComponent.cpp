@@ -8,7 +8,7 @@
 
 namespace yny {
     void MeshComponent::apply_transform() {
-        TransformComponent* transform_component = reinterpret_cast<TransformComponent *>(parentObject->components[Transform]);
+        TransformComponent* transform_component = reinterpret_cast<TransformComponent *>(componentsObject->components[Transform]);
 
         for (vertex& v : vertices) {
             glm::mat4 transform = glm::mat4(1);

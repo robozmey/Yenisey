@@ -9,6 +9,7 @@
 #include "Player.h"
 
 #include <vector>
+#include <string>
 
 namespace yny {
 
@@ -18,8 +19,10 @@ namespace yny {
     public:
         std::map<ComponentType, Component*> components;
 
+        std::string name = "Object";
+
         Scene* scene;
-        Object* parentObject;
+        Object* parentObject = nullptr;
         std::vector<Object*> objects;
 
         std::vector<vertex> vertices;
@@ -39,6 +42,8 @@ namespace yny {
         bool is_collide(Object*);
 
         Object();
+
+        explicit Object(std::string name);
     };
 
 } // yny

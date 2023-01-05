@@ -10,7 +10,7 @@ namespace yny {
 
         this->Object::update_vertices(player);
 
-        this->apply_transform();
+//        this->apply_transform();
     }
 
     void Scene::render() {
@@ -31,7 +31,11 @@ namespace yny {
         this->Object::update_time(player);
     }
 
-    Scene::Scene() {
+    Scene::Scene() : Object("Scene") {
+        scene = this;
+    }
+
+    Scene::Scene(std::string name) : Object(name) {
         scene = this;
     }
 } // yny

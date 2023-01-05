@@ -79,7 +79,7 @@ namespace yny {
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, grass_normal_texture);
 
-        MeshComponent* mc = static_cast<MeshComponent *>(parentObject->components[Mesh]);
+        MeshComponent* mc = static_cast<MeshComponent *>(componentsObject->components[Mesh]);
         std::vector<vertex>& vertices = mc->vertices;
         std::vector<uint32_t>& indices = mc->indices;
 

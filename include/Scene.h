@@ -25,6 +25,8 @@ namespace yny {
         void update_time();
 
         Scene();
+
+        explicit Scene(std::string);
     };
 
 } // yny

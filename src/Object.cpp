@@ -80,12 +80,12 @@ namespace yny {
                 components[type] = new RigibodyComponent();
                 break;
         };
-        components[type]->parentObject = this;
+        components[type]->componentsObject = this;
     }
 
     void Object::add_component(ComponentType type, Component* ptr) {
         components[type] = ptr;
-        components[type]->parentObject = this;
+        components[type]->componentsObject = this;
     }
 
     void Object::add_object(Object* obj) {
@@ -104,6 +104,12 @@ namespace yny {
     }
 
     Object::Object() {
-        components[Transform] = new TransformComponent();
+        parentObject = nullptr;
+        add_component(Transform);
+    };
+
+    Object::Object(std::string name) : name(name) {
+        parentObject = nullptr;
+        add_component(Transform);
     };
 } // yny

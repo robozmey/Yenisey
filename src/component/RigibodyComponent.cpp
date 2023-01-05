@@ -8,7 +8,7 @@
 
 namespace yny {
     void RigibodyComponent::move(float dt) {
-        yny::TransformComponent* tc = reinterpret_cast<yny::TransformComponent *>(parentObject->components[yny::Transform]);
+        yny::TransformComponent* tc = reinterpret_cast<yny::TransformComponent *>(componentsObject->components[yny::Transform]);
         tc->move(speed * dt);
 
         if (gravity) {

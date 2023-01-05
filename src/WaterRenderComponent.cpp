@@ -64,7 +64,7 @@ namespace yny {
 
     void WaterRenderComponent::render(Player& scene_player) {
 
-        WaterMeshComponent* mc = static_cast<WaterMeshComponent *>(parentObject->components[Mesh]);
+        WaterMeshComponent* mc = static_cast<WaterMeshComponent *>(componentsObject->components[Mesh]);
         std::vector<vertex>& vertices = mc->vertices;
         std::vector<uint32_t>& indices = mc->indices;
         std::vector<glm::vec3>& offsets = mc->offsets;

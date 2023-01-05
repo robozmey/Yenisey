@@ -27,7 +27,6 @@
 #include "component/TransformComponent.h"
 #include "elevation/ElevationRenderComponent.h"
 #include "component/RigibodyComponent.h"
-#include "primitive/SphereRenderComponent.h"
 #include "WaterRenderComponent.h"
 #include "elevation/ElevationMeshComponent.h"
 #include "WaterMeshComponent.h"
@@ -82,19 +81,19 @@ int main() {
     yny::Scene scene;
     scene.skybox = yny::Skybox();
 
-    yny::Object sphere;
+    yny::Object sphere("Sphere");
     sphere.add_component(yny::Rigibody);
     sphere.add_component(yny::Mesh, new yny::SphereMeshComponent());
     sphere.add_component(yny::Render);
-    reinterpret_cast<yny::TransformComponent *>(sphere.components[yny::Transform])->move({0, 0, 0});
+    reinterpret_cast<yny::TransformComponent *>(sphere.components[yny::Transform])->move({0, 1, 0});
     scene.add_object(&sphere);
 
-    yny::Object elevation_object;
+    yny::Object elevation_object("Terrain");
     elevation_object.add_component(yny::Mesh, new yny::ElevationMeshComponent());
     elevation_object.add_component(yny::Render, new yny::ElevationRenderComponent());
     scene.add_object(&elevation_object);
 
-    yny::Object waterObject;
+    yny::Object waterObject("Water");
     waterObject.add_component(yny::Rigibody);
     waterObject.add_component(yny::Mesh, new yny::WaterMeshComponent());
     waterObject.add_component(yny::Render, new yny::WaterRenderComponent());

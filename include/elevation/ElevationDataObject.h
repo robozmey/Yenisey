@@ -12,7 +12,7 @@ namespace yny {
 
     class ElevationDataObject {
     public:
-        int lod_count = 2;
+        int lod_count = 3;
 
         float get_data(int latitude, int longitude, int lod, int i, int j);
 

@@ -14,6 +14,7 @@ const char vertex_shader_source[] =
 uniform mat4 model;
 uniform mat4 view;
 uniform mat4 projection;
+uniform mat4 transform;
 
 layout (location = 0) in vec3 in_position;
 layout (location = 1) in vec3 in_normal;
@@ -28,7 +29,7 @@ out vec2 texcoord;
 void main()
 {
     position = in_position;
-    gl_Position = projection * view * model * vec4(in_position, 1.0);
+    gl_Position = projection * view * model * transform * vec4(in_position, 1.0);
     tangent = mat3(model) * in_tangent;
     normal = mat3(model) * in_normal;
 }
@@ -76,7 +77,7 @@ namespace yny {
 
     void RenderComponent::render(Player& scene_player) {
 
-        MeshComponent* mc = static_cast<MeshComponent *>(parentObject->components[Mesh]);
+        MeshComponent* mc = static_cast<MeshComponent *>(componentsObject->components[Mesh]);
         std::vector<vertex>& vertices = mc->vertices;
         std::vector<uint32_t>& indices = mc->indices;
 
@@ -92,6 +93,12 @@ namespace yny {
         glUniformMatrix4fv(model_location, 1, GL_FALSE, reinterpret_cast<float *>(&scene_player.model));
         glUniformMatrix4fv(view_location, 1, GL_FALSE, reinterpret_cast<float *>(&scene_player.view));
         glUniformMatrix4fv(projection_location, 1, GL_FALSE, reinterpret_cast<float *>(&scene_player.projection));
+        glm::mat4 transform;
+        {
+            TransformComponent& tc = reinterpret_cast<TransformComponent &>(componentsObject->components[Transform]);
+            transform = tc.get_transform();
+        }
+        glUniformMatrix4fv(transform_location, 1, GL_FALSE, reinterpret_cast<float *>(&transform));
 
         glBindVertexArray(vao);
         glDrawElements(GL_TRIANGLES, indices.size(),  GL_UNSIGNED_INT, nullptr);
@@ -108,6 +115,7 @@ namespace yny {
         model_location = glGetUniformLocation(program, "model");
         view_location = glGetUniformLocation(program, "view");
         projection_location = glGetUniformLocation(program, "projection");
+        transform_location = glGetUniformLocation(program, "transform");
 
         glGenVertexArrays(1, &vao);
         glGenBuffers(1, &vbo);

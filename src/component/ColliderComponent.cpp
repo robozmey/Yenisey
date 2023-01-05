@@ -27,8 +27,8 @@ namespace yny {
         if (other->collider_type == SphereCollider) {
             SphereColliderComponent* scc = static_cast<SphereColliderComponent *>(other);
 
-            TransformComponent* tc1 = static_cast<TransformComponent *>(parentObject->components[Transform]);
-            TransformComponent* tc2 = static_cast<TransformComponent *>(other->parentObject->components[Transform]);
+            TransformComponent* tc1 = static_cast<TransformComponent *>(componentsObject->components[Transform]);
+            TransformComponent* tc2 = static_cast<TransformComponent *>(other->componentsObject->components[Transform]);
 
             return distance(tc1->position, tc2->position) <= radius + scc->radius;
         }

@@ -29,7 +29,7 @@ namespace yny {
 
     class Component {
     public:
-        Object* parentObject;
+        Object* componentsObject = nullptr;
         ComponentType type;
     };
 

@@ -34,7 +34,7 @@ add_executable(Yenisey
         src/component/RenderComponent.cpp
         src/elevation/elevation.cpp
         src/elevation/ElevationRenderComponent.cpp
-        src/elevation/ElevationDataObject.cpp include/component/RigibodyComponent.h src/component/RigibodyComponent.cpp include/primitive/SphereRenderComponent.cpp src/WaterRenderComponent.cpp src/component/ColliderComponent.cpp src/component/MeshComponent.cpp src/elevation/ElevationMeshComponent.cpp include/primitive/SphereMeshComponent.cpp include/WaterMeshComponent.cpp)
+        src/elevation/ElevationDataObject.cpp include/component/RigibodyComponent.h src/component/RigibodyComponent.cpp src/WaterRenderComponent.cpp src/component/ColliderComponent.cpp src/component/MeshComponent.cpp src/elevation/ElevationMeshComponent.cpp include/primitive/SphereMeshComponent.cpp src/WaterMeshComponent.cpp src/Material.cpp)
 
 target_include_directories(${TARGET_NAME} PUBLIC
         include
