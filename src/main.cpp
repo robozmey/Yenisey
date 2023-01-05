@@ -34,6 +34,7 @@
 
 
 int main() {
+    std::string project_root = PROJECT_ROOT;
     if (SDL_Init(SDL_INIT_VIDEO) != 0)
         sdl2_fail("SDL_Init: ");
 
@@ -78,6 +79,8 @@ int main() {
 
     std::map<SDL_Keycode, bool> button_down;
 
+    yny::Material grassMaterial(project_root + "/texture/grass.png");
+
     yny::Scene scene;
     scene.skybox = yny::Skybox();
 
@@ -90,7 +93,7 @@ int main() {
 
     yny::Object elevation_object("Terrain");
     elevation_object.add_component(yny::Mesh, new yny::ElevationMeshComponent());
-    elevation_object.add_component(yny::Render, new yny::ElevationRenderComponent());
+    elevation_object.add_component(yny::Render, new yny::RenderComponent(&grassMaterial));
     scene.add_object(&elevation_object);
 
     yny::Object waterObject("Water");

@@ -30,7 +30,7 @@ namespace yny {
         glm::mat4 res(1);
 
         if (componentsObject != nullptr && componentsObject->parentObject != nullptr) {
-            res = (reinterpret_cast<TransformComponent&>(componentsObject->parentObject->components[Transform])).get_transform();
+            res = (reinterpret_cast<TransformComponent*>(componentsObject->parentObject->components[Transform]))->get_transform();
         }
 
         res = rotation_matrix(rotation);

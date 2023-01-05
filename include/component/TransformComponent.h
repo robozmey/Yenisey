@@ -20,7 +20,7 @@ namespace yny {
         glm::vec3 rotation = {0, 0, 0};
         glm::vec3 scale = {1, 1, 1};
 
-        TransformComponent(glm::vec3 position);
+        explicit TransformComponent(glm::vec3 position);
 
         TransformComponent();
 
