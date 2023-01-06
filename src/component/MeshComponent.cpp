@@ -21,7 +21,7 @@ namespace yny {
         }
     }
 
-    void MeshComponent::update_vertices(Player& scene_player) {}
+    void MeshComponent::update_vertices(Camera* scene_player) {}
 
     MeshComponent::MeshComponent() : Component() {
         type = Mesh;

@@ -62,15 +62,18 @@ void main()
 )";
 
 namespace yny {
-    void Skybox::render(Player& scene_player) {
+    void Skybox::render(Camera* camera) {
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_2D, environment_texture);
 
         glUseProgram(program);
-        glUniformMatrix4fv(view_location, 1, GL_FALSE, reinterpret_cast<float *>(&scene_player.view));
+        glm::mat4 view = camera->get_camera_view();
+        glUniformMatrix4fv(view_location, 1, GL_FALSE, reinterpret_cast<float *>(&view));
+        glm::mat4 projection = camera->get_camera_projection();
         glUniformMatrix4fv(projection_location, 1, GL_FALSE,
-                           reinterpret_cast<float *>(&scene_player.projection));
-        glUniform3fv(camera_position_location, 1, reinterpret_cast<float *>(&scene_player.camera_position));
+                           reinterpret_cast<float *>(&projection));
+        glm::vec3 camera_position = camera->get_camera_position();
+        glUniform3fv(camera_position_location, 1, reinterpret_cast<float *>(&camera_position));
         glUniform1i(environment_texture_location, 0);
 
         glBindVertexArray(vao);

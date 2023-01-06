@@ -7,18 +7,18 @@
 #include "tools.h"
 
 namespace yny {
-    void ElevationMeshComponent::recalc_terrain(Player& scene_player) {
-        int latitude_seconds = scene_player.latitude_minute * 60;
-        int longitude_seconds = scene_player.longitude_minute * 60;
-        float center_latitude_grad = scene_player.latitude + latitude_seconds / 3600.f;
-        float center_longitude_grad = scene_player.longitude + longitude_seconds / 3600.f;
+    void ElevationMeshComponent::recalc_terrain(Camera* scene_player) {
+        int latitude_seconds = elevationDataObject->latitude_minute * 60;
+        int longitude_seconds = elevationDataObject->longitude_minute * 60;
+        float center_latitude_grad = elevationDataObject->latitude + latitude_seconds / 3600.f;
+        float center_longitude_grad = elevationDataObject->longitude + longitude_seconds / 3600.f;
 
         int diam_seconds = 90;
 
         int diam_size = diam_seconds * 2 + 1;
 
-        latitude_minute = scene_player.latitude_minute;
-        longitude_minute = scene_player.longitude_minute;
+        latitude_minute = elevationDataObject->latitude_minute;
+        longitude_minute = elevationDataObject->longitude_minute;
 
         float latitude_factor = wgs_distance(center_latitude_grad,
                                              center_longitude_grad,
@@ -40,8 +40,8 @@ namespace yny {
                     int longitude_second = -(j - diam_seconds) + longitude_seconds / diam_step;
 
                     float x = (i - diam_seconds) * diam_step * latitude_factor;
-                    float ed = elevationDataObject->get_data(scene_player.latitude,
-                                                             scene_player.longitude,
+                    float ed = elevationDataObject->get_data(elevationDataObject->latitude,
+                                                             elevationDataObject->longitude,
                                                              lod,
                                                              latitude_second,
                                                              longitude_second);
@@ -174,8 +174,8 @@ namespace yny {
         }
     }
 
-    void ElevationMeshComponent::update_vertices(Player& scene_player) {
-        if (latitude_minute != scene_player.latitude_minute || longitude_minute != scene_player.longitude_minute) {
+    void ElevationMeshComponent::update_vertices(Camera* scene_player) {
+        if (latitude_minute != elevationDataObject->latitude_minute || longitude_minute != elevationDataObject->longitude_minute) {
             recalc_terrain(scene_player);
         }
     }

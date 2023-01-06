@@ -7,7 +7,7 @@
 
 #include <vector>
 #include "Component.h"
-#include "Player.h"
+#include "Camera.h"
 #include "Material.h"
 #include "LightSource.h"
 
@@ -38,8 +38,8 @@ namespace yny {
         GLuint directional_light_direction_location;
         GLuint spot_light_position_location;
 
-        virtual void render(Player& scene_player, LightSource* lightSource);
-        virtual void render(Player& scene_player);
+        virtual void render(Camera* camera, LightSource* lightSource);
+        virtual void render(Camera* camera);
 
         RenderComponent();
 

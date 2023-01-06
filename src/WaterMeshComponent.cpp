@@ -33,7 +33,7 @@ namespace yny {
         return res;
     }
 
-    void WaterMeshComponent::update_vertices(Player& scene_player) {
+    void WaterMeshComponent::update_vertices(Camera* scene_player) {
         int k = 20;
         int r = 20;
         int n = r * 2 + 1;
@@ -43,7 +43,7 @@ namespace yny {
             int lod_verteces_offset = n * n * lod;
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < n; j++) {
-                    float time = scene_player.time;
+                    float time = scene_player->time;
 
                     float x = (i - r) * k * (1<<lod);
                     float z = (j - r) * k * (1<<lod);

@@ -7,7 +7,7 @@
 
 #include "elevation/elevation.h"
 #include "Object.h"
-#include "Player.h"
+#include "Camera.h"
 #include "component/RenderComponent.h"
 
 namespace yny {
@@ -28,7 +28,7 @@ namespace yny {
         GLuint vao, vbo, ebo;
         GLuint program;
 
-        void render(Player& scene_player) override;
+        void render(Camera* scene_player) override;
 
         WaterRenderComponent();
 

@@ -62,7 +62,7 @@ void main()
 
 namespace yny {
 
-    void WaterRenderComponent::render(Player& scene_player) {
+    void WaterRenderComponent::render(Camera* scene_player) {
 
         WaterMeshComponent* mc = static_cast<WaterMeshComponent *>(componentsObject->components[Mesh]);
         std::vector<vertex>& vertices = mc->vertices;
@@ -81,9 +81,9 @@ namespace yny {
         glBufferData(GL_ARRAY_BUFFER, offsets.size() * sizeof(offsets[0]), offsets.data(), GL_DYNAMIC_DRAW);
 
         glUseProgram(program);
-        glUniformMatrix4fv(model_location, 1, GL_FALSE, reinterpret_cast<float *>(&scene_player.model));
-        glUniformMatrix4fv(view_location, 1, GL_FALSE, reinterpret_cast<float *>(&scene_player.view));
-        glUniformMatrix4fv(projection_location, 1, GL_FALSE, reinterpret_cast<float *>(&scene_player.projection));
+        glUniformMatrix4fv(model_location, 1, GL_FALSE, reinterpret_cast<float *>(&scene_player->model));
+        glUniformMatrix4fv(view_location, 1, GL_FALSE, reinterpret_cast<float *>(&scene_player->view));
+        glUniformMatrix4fv(projection_location, 1, GL_FALSE, reinterpret_cast<float *>(&scene_player->projection));
 
         auto l = glm::vec3(0, 1, 0);
         glUniform3fv(light_direction_location, 1, reinterpret_cast<float *>(&l));

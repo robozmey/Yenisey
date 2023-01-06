@@ -17,12 +17,12 @@ namespace yny {
         ElevationDataObject* elevationDataObject{};
         int latitude_minute = 0, longitude_minute = 0;
 
-        void update_vertices(Player& scene_player) override;
+        void update_vertices(Camera* scene_player) override;
 
         ElevationMeshComponent();
 
     private:
-        void recalc_terrain(Player& scene_player);
+        void recalc_terrain(Camera* scene_player);
     };
 
 } // yny

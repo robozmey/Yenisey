@@ -8,14 +8,14 @@
 #include <vector>
 
 #include "Object.h"
-#include "Player.h"
+#include "Camera.h"
 #include "Skybox.h"
 
 namespace yny {
 
     class Scene : public Object {
     public:
-        Player player;
+        Camera* sceneCamera;
         Skybox skybox;
 
         void update_vertices();

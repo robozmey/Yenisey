@@ -28,6 +28,10 @@ namespace yny {
         void rotate(glm::vec3 rotation1);
 
         glm::mat4 get_transform();
+
+        glm::vec3 get_position();
+
+        glm::vec3 get_rotation();
     };
 
 } // yny

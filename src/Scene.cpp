@@ -8,7 +8,7 @@
 namespace yny {
     void Scene::update_vertices() {
 
-        this->Object::update_vertices(player);
+        this->Object::update_vertices(sceneCamera);
 
 //        this->apply_transform();
     }
@@ -19,7 +19,7 @@ namespace yny {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
 
-        skybox.render(player);
+        skybox.render(sceneCamera);
 
         glClear(GL_DEPTH_BUFFER_BIT);
 
@@ -34,13 +34,13 @@ namespace yny {
         lightSources.push_back(&directionalLightSource);
 
         for (auto lightSource : lightSources) {
-            this->Object::render(player, lightSource);
+            this->Object::render(sceneCamera, lightSource);
         }
 
     }
 
     void Scene::update_time() {
-        this->Object::update_time(player);
+        this->Object::update_time(sceneCamera);
     }
 
     Scene::Scene() : Object("Scene") {

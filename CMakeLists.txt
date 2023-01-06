@@ -25,7 +25,7 @@ add_executable(Yenisey
         src/main.cpp
         src/Scene.cpp
         src/Object.cpp
-        src/Player.cpp
+        src/Camera.cpp
         src/tools.cpp
         src/Skybox.cpp
         src/stb_image.c
@@ -33,8 +33,7 @@ add_executable(Yenisey
         src/component/TransformComponent.cpp
         src/component/RenderComponent.cpp
         src/elevation/elevation.cpp
-        src/elevation/ElevationRenderComponent.cpp
-        src/elevation/ElevationDataObject.cpp include/component/RigibodyComponent.h src/component/RigibodyComponent.cpp src/WaterRenderComponent.cpp src/component/ColliderComponent.cpp src/component/MeshComponent.cpp src/elevation/ElevationMeshComponent.cpp include/primitive/SphereMeshComponent.cpp src/WaterMeshComponent.cpp src/Material.cpp include/LightSource.cpp)
+        src/elevation/ElevationDataObject.cpp include/component/RigibodyComponent.h src/component/RigibodyComponent.cpp src/WaterRenderComponent.cpp src/component/ColliderComponent.cpp src/component/MeshComponent.cpp src/elevation/ElevationMeshComponent.cpp include/primitive/SphereMeshComponent.cpp src/WaterMeshComponent.cpp src/Material.cpp include/LightSource.cpp include/Player.cpp)
 
 target_include_directories(${TARGET_NAME} PUBLIC
         include

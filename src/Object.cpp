@@ -35,7 +35,7 @@ namespace yny {
         }
     }
 
-    void Object::update_vertices(Player& scene_player) {
+    void Object::update_vertices(Camera* scene_player) {
         if (components.contains(Mesh)) {
             MeshComponent* meshComponent = static_cast<MeshComponent *>(components[Mesh]);
             meshComponent->update_vertices(scene_player);
@@ -46,7 +46,7 @@ namespace yny {
         }
     }
 
-    void Object::render(Player& scene_player, LightSource* lightSource) {
+    void Object::render(Camera* scene_player, LightSource* lightSource) {
         if (components.contains(Render)) {
             RenderComponent* renderComponent = static_cast<RenderComponent *>(components[Render]);
             renderComponent->render(scene_player, lightSource);
@@ -57,7 +57,7 @@ namespace yny {
         }
     }
 
-    void Object::render(Player& scene_player) {
+    void Object::render(Camera* scene_player) {
         if (components.contains(Render)) {
             RenderComponent* renderComponent = static_cast<RenderComponent *>(components[Render]);
             renderComponent->render(scene_player);
@@ -68,10 +68,10 @@ namespace yny {
         }
     }
 
-    void Object::update_time(Player& scene_player) {
+    void Object::update_time(Camera* scene_player) {
         if (components.contains(Rigibody)) {
             yny::RigibodyComponent* rc = reinterpret_cast<yny::RigibodyComponent *>(components[yny::Rigibody]);
-            rc->move(scene_player.dt);
+            rc->move(scene_player->dt);
         }
 
         for (Object* obj : objects) {

@@ -14,6 +14,9 @@ namespace yny {
     public:
         int lod_count = 3;
 
+        int latitude = 55, longitude = 92;
+        int latitude_minute = 29, longitude_minute = 30;
+
         float get_data(int latitude, int longitude, int lod, int i, int j);
 
     private:

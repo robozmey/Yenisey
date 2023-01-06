@@ -129,7 +129,7 @@ namespace yny {
 
     LightSource default_light_source = LightSource();
 
-    void RenderComponent::render(Player& scene_player, LightSource* lightSource) {
+    void RenderComponent::render(Camera* camera, LightSource* lightSource) {
 
         MeshComponent* mc = static_cast<MeshComponent *>(componentsObject->components[Mesh]);
         std::vector<vertex>& vertices = mc->vertices;
@@ -144,11 +144,17 @@ namespace yny {
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(indices[0]), indices.data(), GL_STATIC_DRAW);
 
         glUseProgram(program);
-        glUniform3fv(camera_position_location, 1, reinterpret_cast<float *>(&scene_player.camera_position));
+        {
+            glm::vec3 camera_position = camera->get_camera_position();
+            glUniform3fv(camera_position_location, 1, reinterpret_cast<float *>(&camera_position));
+            glm::mat4 model = camera->get_camera_model();
+            glUniformMatrix4fv(model_location, 1, GL_FALSE, reinterpret_cast<float *>(&model));
+            glm::mat4 view = camera->get_camera_view();
+            glUniformMatrix4fv(view_location, 1, GL_FALSE, reinterpret_cast<float *>(&view));
+            glm::mat4 projection = camera->get_camera_projection();
+            glUniformMatrix4fv(projection_location, 1, GL_FALSE, reinterpret_cast<float *>(&projection));
+        }
 
-        glUniformMatrix4fv(model_location, 1, GL_FALSE, reinterpret_cast<float *>(&scene_player.model));
-        glUniformMatrix4fv(view_location, 1, GL_FALSE, reinterpret_cast<float *>(&scene_player.view));
-        glUniformMatrix4fv(projection_location, 1, GL_FALSE, reinterpret_cast<float *>(&scene_player.projection));
         glm::mat4 transform;
         {
             TransformComponent* tc = reinterpret_cast<TransformComponent *>(componentsObject->components[Transform]);
@@ -181,7 +187,7 @@ namespace yny {
         glDrawElements(GL_TRIANGLES, indices.size(),  GL_UNSIGNED_INT, nullptr);
     }
 
-    void RenderComponent::render(Player& scene_player) {
+    void RenderComponent::render(Camera* scene_player) {
         render(scene_player, &default_light_source);
     }
 

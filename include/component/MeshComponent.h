@@ -7,7 +7,7 @@
 
 #include <vector>
 #include "Component.h"
-#include "Player.h"
+#include "Camera.h"
 
 namespace yny {
     class MeshComponent : public Component{
@@ -16,7 +16,7 @@ namespace yny {
         std::vector<vertex> vertices;
         std::vector<uint32_t> indices;
 
-        virtual void update_vertices(Player& scene_player);
+        virtual void update_vertices(Camera* scene_player);
 
         void apply_transform();
 

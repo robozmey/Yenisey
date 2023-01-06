@@ -6,15 +6,17 @@
 #define YENISEY_OBJECT_H
 
 #include "component/Component.h"
-#include "Player.h"
 #include "LightSource.h"
 
 #include <vector>
 #include <string>
+#include <map>
 
 namespace yny {
 
     class Scene;
+
+    class Camera;
 
     class Object {
     public:
@@ -31,10 +33,10 @@ namespace yny {
 
         void apply_transform();
 
-        virtual void update_vertices(Player& scene_player);
-        virtual void render(Player& scene_player, LightSource* lightSource);
-        virtual void render(Player& scene_player);
-        void update_time(Player& scene_player);
+        virtual void update_vertices(Camera* scene_player);
+        virtual void render(Camera* scene_player, LightSource* lightSource);
+        virtual void render(Camera* scene_player);
+        void update_time(Camera* scene_player);
 
         void add_object(Object*);
 

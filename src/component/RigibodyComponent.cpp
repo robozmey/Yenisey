@@ -12,7 +12,8 @@ namespace yny {
         tc->move(speed * dt);
 
         if (gravity) {
-            tc->move(gravity_speed * dt);
+            speed += glm::vec3(0, -9.8, 0) * dt;
+//            tc->move(gravity_speed * dt);
         }
     }
 } // yny

@@ -25,7 +25,6 @@
 #include "Scene.h"
 #include "Skybox.h"
 #include "component/TransformComponent.h"
-#include "elevation/ElevationRenderComponent.h"
 #include "component/RigibodyComponent.h"
 #include "WaterRenderComponent.h"
 #include "elevation/ElevationMeshComponent.h"
@@ -86,6 +85,12 @@ int main() {
     yny::Scene scene;
     scene.skybox = yny::Skybox();
 
+    yny::Object playerObject("Player");
+    yny::Camera playerCamera;
+    playerObject.add_object(reinterpret_cast<yny::Object *>(&playerCamera));
+    scene.add_object(&playerObject);
+    scene.sceneCamera = &playerCamera;
+
     yny::Object sphere("Sphere");
     sphere.add_component(yny::Rigibody);
     sphere.add_component(yny::Mesh, new yny::SphereMeshComponent());
@@ -138,8 +143,8 @@ int main() {
         time += dt;
 
 
-        scene.player.move(button_down, time);
-        scene.player.update_screen(width, height);
+        scene.sceneCamera->move(button_down, time);
+        scene.sceneCamera->update_screen(width, height);
 
         scene.update_time();
         scene.update_vertices();

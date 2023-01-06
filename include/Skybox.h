@@ -14,7 +14,7 @@
 
 #include <GL/glew.h>
 
-#include "Player.h"
+#include "Camera.h"
 
 namespace yny {
 
@@ -31,7 +31,7 @@ namespace yny {
         GLuint camera_position_location;
         GLuint environment_texture_location;
 
-        void render(Player& scene_player);
+        void render(Camera* camera);
 
         Skybox();
     };

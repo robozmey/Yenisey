@@ -27,7 +27,7 @@ namespace yny {
 
         int lod_count = 6;
 
-        void update_vertices(Player& scene_player) override;
+        void update_vertices(Camera* scene_player) override;
 
         WaterMeshComponent();
 

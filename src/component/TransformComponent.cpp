@@ -38,4 +38,41 @@ namespace yny {
 
         return res;
     }
+
+    glm::vec3 get_position(glm::mat4 transform) {
+        return glm::inverse(transform) * glm::vec4(0, 0, 0, 1);
+    }
+
+    glm::vec3 TransformComponent::get_position() {
+        auto transform = get_transform();
+        return ::yny::get_position(transform);
+    }
+
+    glm::vec3 get_rotation(glm::mat4 transform) {
+
+        double h, p, b; // angles in degrees
+
+// extract pitch
+        double sinP = -transform[1][2];
+        if (sinP >= 1) {
+            p = glm::pi<float>() / 2; }       // pole
+        else if (sinP <= -1) {
+            p = -glm::pi<float>() / 2; } // pole
+        else {
+            p = asin(sinP); }
+
+// extract heading and bank
+        if (sinP < -0.9999 || sinP > 0.9999) { // account for small angle errors
+            h = atan2(-transform[2][0], transform[0][0]);
+            b = 0; }
+        else {
+            h = atan2(transform[0][2], transform[2][2]);
+            b = atan2(transform[1][0], transform[1][1]); }
+        return {-p, -h, b};
+    }
+
+    glm::vec3 TransformComponent::get_rotation() {
+        auto transform = get_transform();
+        return ::yny::get_rotation(transform);
+    }
 } // yny
