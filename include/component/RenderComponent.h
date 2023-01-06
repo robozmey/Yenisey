@@ -9,6 +9,7 @@
 #include "Component.h"
 #include "Player.h"
 #include "Material.h"
+#include "LightSource.h"
 
 namespace yny {
 
@@ -24,12 +25,20 @@ namespace yny {
         GLuint vao, vbo, ebo;
         GLuint program;
 
-        Material* material;
+        GLuint camera_position_location;
 
+        Material* material;
         GLuint material_type_location;
         GLuint material_color_location;
         GLuint material_texture_location;
 
+        GLuint light_type_location;
+        GLuint light_color_location;
+        GLuint light_intensity_location;
+        GLuint directional_light_direction_location;
+        GLuint spot_light_position_location;
+
+        virtual void render(Player& scene_player, LightSource* lightSource);
         virtual void render(Player& scene_player);
 
         RenderComponent();

@@ -20,7 +20,7 @@ namespace yny {
     float WaterMeshComponent::dhx(float x, float z, float t) {
         float res = 0;
         for (auto wf : wave_funcs) {
-            res += wf.wavelength * wf.direction.x * wf.amplitude * cos(cross2(wf.direction, glm::vec2(x, z)) * wf.wavelength + t * wf.phase_constant);
+            res += wf.wavelength * wf.direction[0] * wf.amplitude * cos(cross2(wf.direction, glm::vec2(x, z)) * wf.wavelength + t * wf.phase_constant);
         }
         return res;
     }
@@ -28,13 +28,13 @@ namespace yny {
     float WaterMeshComponent::dhz(float x, float z, float t) {
         float res = 0;
         for (auto wf : wave_funcs) {
-            res += wf.wavelength * wf.direction.y * wf.amplitude * cos(cross2(wf.direction, glm::vec2(x, z)) * wf.wavelength + t * wf.phase_constant);
+            res += wf.wavelength * wf.direction[1] * wf.amplitude * cos(cross2(wf.direction, glm::vec2(x, z)) * wf.wavelength + t * wf.phase_constant);
         }
         return res;
     }
 
     void WaterMeshComponent::update_vertices(Player& scene_player) {
-        int k = 50;
+        int k = 20;
         int r = 20;
         int n = r * 2 + 1;
         vertices.resize(lod_count * n * n);
@@ -55,6 +55,8 @@ namespace yny {
                     glm::vec3 t = {0, dhz(x, z, time), 1};
 
                     v.normal = glm::cross(b, t);
+                    if (v.normal.y < 0)
+                        v.normal *= -1;
                     v.tangent = t;
                 }
             }
@@ -159,7 +161,7 @@ namespace yny {
     }
 
     WaterMeshComponent::WaterMeshComponent() {
-        wave_funcs.push_back({1, {1, 0}, 1, 1});
-        wave_funcs.push_back({1, {0.5, 1}, 1, 1});
+        wave_funcs.push_back({1, {1, 0}, 0.3, 1});
+//        wave_funcs.push_back({1, {0, 1}, 1, 1});
     }
 } // yny

@@ -81,6 +81,8 @@ int main() {
 
     yny::Material grassMaterial(project_root + "/texture/grass.png");
 
+    yny::Material waterMaterial(glm::vec3({0, 0, 0.6}));
+
     yny::Scene scene;
     scene.skybox = yny::Skybox();
 
@@ -97,9 +99,9 @@ int main() {
     scene.add_object(&elevation_object);
 
     yny::Object waterObject("Water");
-    waterObject.add_component(yny::Rigibody);
+//    waterObject.add_component(yny::Rigibody);
     waterObject.add_component(yny::Mesh, new yny::WaterMeshComponent());
-    waterObject.add_component(yny::Render, new yny::WaterRenderComponent());
+    waterObject.add_component(yny::Render, new yny::RenderComponent(&waterMaterial));
     scene.add_object(&waterObject);
 
     bool running = true;

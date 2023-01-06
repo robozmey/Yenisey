@@ -38,6 +38,13 @@ void main()
 const char fragment_shader_source[] =
         R"(#version 330 core
 
+uniform vec3 camera_position;
+
+// Material
+
+int one_color_material_type = 0;
+int texture_material_type = 1;
+
 uniform int material_type;
 uniform vec4 material_color;
 uniform sampler2D material_texture;
@@ -45,7 +52,23 @@ uniform sampler2D material_texture;
 uniform bool has_normal_map;
 uniform sampler2D normal_texture;
 
-uniform vec3 light_direction;
+
+// LightSource
+
+int ambient_light_type = 0;
+int directional_light_type = 1;
+int spot_light_type = 2;
+
+uniform int light_type;
+uniform vec3 light_color;
+uniform float light_intensity;
+uniform vec3 directional_light_direction;
+uniform vec3 spot_light_position;
+
+
+// Mist
+
+uniform vec3 mist_color;
 
 in vec3 position;
 in vec3 normal;
@@ -59,7 +82,12 @@ void main()
 {
     vec2 real_texcoord = position.xz / 100;
 
-    vec3 albedo = texture(material_texture, real_texcoord).rgb;
+    vec3 albedo = vec3(0.1, 0, 0.2);
+    if (material_type == one_color_material_type) {
+        albedo = material_color.rgb;
+    } else if (material_type == texture_material_type) {
+        albedo = texture(material_texture, real_texcoord).rgb;
+    }
 
     vec3 real_normal = normal;
 
@@ -69,12 +97,29 @@ void main()
         real_normal = tbn * (texture(normal_texture, real_texcoord).xyz * 2.0 - vec3(1.0));
     }
 
-    vec3 ambient = vec3(0.2);
-    float diffuse = max(0.0, dot(normalize(normal), light_direction));
+    if (light_type == ambient_light_type) {
+        out_color = vec4(albedo * light_intensity, 1);
+    } else {
+        vec3 light_direction;
+        if (light_type == directional_light_type) {
+            light_direction = directional_light_direction;
+        } else if (light_type == spot_light_type) {
+            light_direction = normalize(position - spot_light_position);
+        }
+        float diffuse = max(0.0, dot(normalize(normal), light_direction));
 
-    vec3 color = albedo * (ambient + diffuse);
+        vec3 color = albedo * (diffuse);
 
-    out_color = vec4(color, 1);
+        out_color = vec4(color, 1);
+    }
+
+    // Mist
+    float optical_depth = distance(position, camera_position) / 1000;
+
+    optical_depth = min(1, max(0, optical_depth));
+
+//    out_color = vec4(mist_color, 1) * optical_depth + out_color * (1 - optical_depth);
+
 }
 )";
 
@@ -82,7 +127,9 @@ namespace yny {
 
     Material default_material = Material();
 
-    void RenderComponent::render(Player& scene_player) {
+    LightSource default_light_source = LightSource();
+
+    void RenderComponent::render(Player& scene_player, LightSource* lightSource) {
 
         MeshComponent* mc = static_cast<MeshComponent *>(componentsObject->components[Mesh]);
         std::vector<vertex>& vertices = mc->vertices;
@@ -97,6 +144,8 @@ namespace yny {
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(indices[0]), indices.data(), GL_STATIC_DRAW);
 
         glUseProgram(program);
+        glUniform3fv(camera_position_location, 1, reinterpret_cast<float *>(&scene_player.camera_position));
+
         glUniformMatrix4fv(model_location, 1, GL_FALSE, reinterpret_cast<float *>(&scene_player.model));
         glUniformMatrix4fv(view_location, 1, GL_FALSE, reinterpret_cast<float *>(&scene_player.view));
         glUniformMatrix4fv(projection_location, 1, GL_FALSE, reinterpret_cast<float *>(&scene_player.projection));
@@ -107,17 +156,33 @@ namespace yny {
         }
         glUniformMatrix4fv(transform_location, 1, GL_FALSE, reinterpret_cast<float *>(&transform));
 
-        glUniform1i(material_type_location, material->materialType);
-        if (material->materialType == OneColorMaterial) {
-            glUniform4fv(material_type_location, 1, reinterpret_cast<float *>(&material->color));
-        } else if (material->materialType == TextureMaterial) {
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, material->texture);
-            glUniform1i(material_texture_location, 0);
+        {   // Material
+            glUniform1i(material_type_location, material->materialType);
+            if (material->materialType == OneColorMaterial) {
+                glUniform4fv(material_color_location, 1, reinterpret_cast<float *>(&material->color));
+            } else if (material->materialType == TextureMaterial) {
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, material->texture);
+                glUniform1i(material_texture_location, 0);
+            }
+        }
+
+        { // LightSource
+            glUniform1i(light_type_location, lightSource->lightSourceType);
+            glUniform1f(light_intensity_location, lightSource->light_intensity);
+            if (lightSource->lightSourceType == DirectionalLight) {
+                glUniform3fv(directional_light_direction_location, 1, reinterpret_cast<float *>(&lightSource->direction));
+            } else if (lightSource->lightSourceType == SpotLight) {
+                glUniform3fv(directional_light_direction_location, 1, reinterpret_cast<float *>(&lightSource->position));
+            }
         }
 
         glBindVertexArray(vao);
         glDrawElements(GL_TRIANGLES, indices.size(),  GL_UNSIGNED_INT, nullptr);
+    }
+
+    void RenderComponent::render(Player& scene_player) {
+        render(scene_player, &default_light_source);
     }
 
     void RenderComponent::create_render_component() {
@@ -128,6 +193,8 @@ namespace yny {
         auto fragment_shader = create_shader(GL_FRAGMENT_SHADER, fragment_shader_source);
         program = create_program(vertex_shader, fragment_shader);
 
+        camera_position_location = glGetUniformLocation(program, "camera_position");
+
         model_location = glGetUniformLocation(program, "model");
         view_location = glGetUniformLocation(program, "view");
         projection_location = glGetUniformLocation(program, "projection");
@@ -136,6 +203,12 @@ namespace yny {
         material_type_location = glGetUniformLocation(program, "material_type");
         material_color_location = glGetUniformLocation(program, "material_color");
         material_texture_location = glGetUniformLocation(program, "material_texture");
+
+        light_type_location = glGetUniformLocation(program, "light_type");
+        light_color_location = glGetUniformLocation(program, "light_color");
+        light_intensity_location = glGetUniformLocation(program, "light_intensity");
+        directional_light_direction_location = glGetUniformLocation(program, "directional_light_direction");
+        spot_light_position_location = glGetUniformLocation(program, "spot_light_position");
 
         glGenVertexArrays(1, &vao);
         glGenBuffers(1, &vbo);

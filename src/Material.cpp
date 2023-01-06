@@ -7,7 +7,8 @@
 
 namespace yny {
 
-    void Material::create_one_color(glm::vec4) {
+    void Material::create_one_color(glm::vec4 material_color) {
+        color = material_color;
         materialType = OneColorMaterial;
     }
 

@@ -7,6 +7,7 @@
 
 #include "component/Component.h"
 #include "Player.h"
+#include "LightSource.h"
 
 #include <vector>
 #include <string>
@@ -31,6 +32,7 @@ namespace yny {
         void apply_transform();
 
         virtual void update_vertices(Player& scene_player);
+        virtual void render(Player& scene_player, LightSource* lightSource);
         virtual void render(Player& scene_player);
         void update_time(Player& scene_player);
 

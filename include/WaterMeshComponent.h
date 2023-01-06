@@ -25,7 +25,7 @@ namespace yny {
         float dhx(float x, float z, float t);
         float dhz(float x, float z, float t);
 
-        int lod_count = 3;
+        int lod_count = 6;
 
         void update_vertices(Player& scene_player) override;
 

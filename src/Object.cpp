@@ -46,6 +46,17 @@ namespace yny {
         }
     }
 
+    void Object::render(Player& scene_player, LightSource* lightSource) {
+        if (components.contains(Render)) {
+            RenderComponent* renderComponent = static_cast<RenderComponent *>(components[Render]);
+            renderComponent->render(scene_player, lightSource);
+        }
+
+        for (Object* obj : objects) {
+            obj->render(scene_player, lightSource);
+        }
+    }
+
     void Object::render(Player& scene_player) {
         if (components.contains(Render)) {
             RenderComponent* renderComponent = static_cast<RenderComponent *>(components[Render]);

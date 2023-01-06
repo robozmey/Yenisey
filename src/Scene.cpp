@@ -23,7 +23,19 @@ namespace yny {
 
         glClear(GL_DEPTH_BUFFER_BIT);
 
-        this->Object::render(player);
+        std::vector<LightSource*> lightSources;
+
+        LightSource ambientLightSource = LightSource();
+//        lightSources.push_back(&ambientLightSource);
+
+        LightSource directionalLightSource = LightSource();
+        directionalLightSource.lightSourceType = DirectionalLight;
+        directionalLightSource.direction = {0, 1, 1};
+        lightSources.push_back(&directionalLightSource);
+
+        for (auto lightSource : lightSources) {
+            this->Object::render(player, lightSource);
+        }
 
     }
 
