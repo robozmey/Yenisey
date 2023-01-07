@@ -3,11 +3,13 @@
 //
 
 #include "Object.h"
+#include "Scene.h"
 #include "component/TransformComponent.h"
 #include "component/RenderComponent.h"
 #include "component/RigibodyComponent.h"
 #include "component/ColliderComponent.h"
 #include "component/MeshComponent.h"
+#include "component/ScriptComponent.h"
 #include <iostream>
 
 namespace yny {
@@ -68,14 +70,20 @@ namespace yny {
         }
     }
 
-    void Object::update_time(Camera* scene_player) {
+    void Object::update() {
+
         if (components.contains(Rigibody)) {
-            yny::RigibodyComponent* rc = reinterpret_cast<yny::RigibodyComponent *>(components[yny::Rigibody]);
-            rc->move(scene_player->dt);
+            yny::RigibodyComponent* rc = reinterpret_cast<yny::RigibodyComponent *>(components[Rigibody]);
+            rc->move(scene->dt);
+        }
+
+        if (components.contains(Script)) {
+            yny::ScriptComponent* sc = static_cast<yny::ScriptComponent *>(components[Script]);
+            sc->update();
         }
 
         for (Object* obj : objects) {
-            obj->update_time(scene_player);
+            obj->update();
         }
     }
 

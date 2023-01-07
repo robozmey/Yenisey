@@ -39,8 +39,8 @@ namespace yny {
 
     }
 
-    void Scene::update_time() {
-        this->Object::update_time(sceneCamera);
+    void Scene::update() {
+        this->Object::update();
     }
 
     Scene::Scene() : Object("Scene") {

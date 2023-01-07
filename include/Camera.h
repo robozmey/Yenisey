@@ -32,15 +32,8 @@ namespace yny {
 
     class Camera : public Object {
     public:
-        float time = 0;
-        float dt = 0;
-
-        float rotation_speed = 1;
-        float movement_speed = 100;
-
         glm::vec3 inner_camera_position = glm::vec3(0, -800, -100);
         glm::vec3 camera_rotation = glm::vec3(0.5, 0, 0);
-        glm::vec3 camera_direction, side_direction;
 
         glm::vec3 camera_position;
 
@@ -53,8 +46,6 @@ namespace yny {
 
         int width, height;
 
-        void move(std::map<SDL_Keycode, bool> button_down, float dt);
-
         void update_screen(int width, int height);
 
         glm::vec3 get_camera_position();
@@ -65,6 +56,9 @@ namespace yny {
         glm::mat4 get_camera_view();
 
         glm::mat4 get_camera_projection();
+
+        explicit Camera(std::string name);
+        Camera();
     };
 
 

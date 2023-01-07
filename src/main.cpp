@@ -30,6 +30,7 @@
 #include "elevation/ElevationMeshComponent.h"
 #include "WaterMeshComponent.h"
 #include "primitive/SphereMeshComponent.h"
+#include "PlayerScriptComponent.h"
 
 
 int main() {
@@ -78,7 +79,7 @@ int main() {
 
     std::map<SDL_Keycode, bool> button_down;
 
-    yny::Material grassMaterial(project_root + "/texture/grass.png");
+    yny::Material snowMaterial(project_root + "/texture/snow2_d.jpg");
 
     yny::Material waterMaterial(glm::vec3({0, 0, 0.6}));
 
@@ -86,7 +87,8 @@ int main() {
     scene.skybox = yny::Skybox();
 
     yny::Object playerObject("Player");
-    yny::Camera playerCamera;
+    playerObject.add_component(yny::Script, new yny::PlayerScriptComponent);
+    yny::Camera playerCamera("Camera");
     playerObject.add_object(reinterpret_cast<yny::Object *>(&playerCamera));
     scene.add_object(&playerObject);
     scene.sceneCamera = &playerCamera;
@@ -100,14 +102,14 @@ int main() {
 
     yny::Object elevation_object("Terrain");
     elevation_object.add_component(yny::Mesh, new yny::ElevationMeshComponent());
-    elevation_object.add_component(yny::Render, new yny::RenderComponent(&grassMaterial));
+    elevation_object.add_component(yny::Render, new yny::RenderComponent(&snowMaterial));
     scene.add_object(&elevation_object);
 
     yny::Object waterObject("Water");
 //    waterObject.add_component(yny::Rigibody);
     waterObject.add_component(yny::Mesh, new yny::WaterMeshComponent());
     waterObject.add_component(yny::Render, new yny::RenderComponent(&waterMaterial));
-    scene.add_object(&waterObject);
+//    scene.add_object(&waterObject);
 
     bool running = true;
     while (running)
@@ -142,11 +144,14 @@ int main() {
         last_frame_start = now;
         time += dt;
 
+        scene.time = time;
+        scene.dt = dt;
 
-        scene.sceneCamera->move(button_down, time);
+        scene.input.button_down = button_down;
+
         scene.sceneCamera->update_screen(width, height);
 
-        scene.update_time();
+        scene.update();
         scene.update_vertices();
 
         scene.render();

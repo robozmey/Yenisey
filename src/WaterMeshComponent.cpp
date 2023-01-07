@@ -3,6 +3,7 @@
 //
 
 #include "WaterMeshComponent.h"
+#include "Scene.h"
 
 float cross2(glm::vec2 a, glm::vec2 b) {
     return a.x * b.x + a.y * b.y;
@@ -43,7 +44,7 @@ namespace yny {
             int lod_verteces_offset = n * n * lod;
             for (int i = 0; i < n; i++) {
                 for (int j = 0; j < n; j++) {
-                    float time = scene_player->time;
+                    float time = componentsObject->scene->time;
 
                     float x = (i - r) * k * (1<<lod);
                     float z = (j - r) * k * (1<<lod);

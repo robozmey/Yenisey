@@ -10,6 +10,7 @@
 #include "Object.h"
 #include "Camera.h"
 #include "Skybox.h"
+#include "Input.h"
 
 namespace yny {
 
@@ -18,11 +19,16 @@ namespace yny {
         Camera* sceneCamera;
         Skybox skybox;
 
+        Input input;
+
+        float time;
+        float dt;
+
         void update_vertices();
 
         void render();
 
-        void update_time();
+        void update();
 
         Scene();
 

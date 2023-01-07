@@ -33,7 +33,7 @@ namespace yny {
             res = (reinterpret_cast<TransformComponent*>(componentsObject->parentObject->components[Transform]))->get_transform();
         }
 
-        res = rotation_matrix(rotation);
+        res = res * rotation_matrix(rotation);
         res = glm::translate(res, position);
 
         return res;

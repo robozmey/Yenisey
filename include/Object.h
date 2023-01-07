@@ -22,7 +22,7 @@ namespace yny {
     public:
         std::map<ComponentType, Component*> components;
 
-        std::string name = "Object";
+        std::string name = "Unnamed object";
 
         Scene* scene;
         Object* parentObject = nullptr;
@@ -34,9 +34,11 @@ namespace yny {
         void apply_transform();
 
         virtual void update_vertices(Camera* scene_player);
+
         virtual void render(Camera* scene_player, LightSource* lightSource);
         virtual void render(Camera* scene_player);
-        void update_time(Camera* scene_player);
+
+        virtual void update();
 
         void add_object(Object*);
 

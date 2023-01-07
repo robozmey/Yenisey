@@ -25,6 +25,7 @@ namespace yny {
         Render,
         Collider,
         Mesh,
+        Script,
     };
 
     class Component {
