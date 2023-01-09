@@ -154,7 +154,10 @@ namespace yny {
                                         vertices[lod_verteces_offset + (i + i1) * diam_size + j].position,
                                         vertices[lod_verteces_offset + i * diam_size + j + j1].position);
                                 if (tmp_normal.y < 0)
-                                    tmp_normal *= -1.f;
+                                    tmp_normal = get_triangle_normal(
+                                            vertices[lod_verteces_offset + i * diam_size + j].position,
+                                            vertices[lod_verteces_offset + i * diam_size + j + j1].position,
+                                            vertices[lod_verteces_offset + (i + i1) * diam_size + j].position);
                                 normal_sum += tmp_normal;
                                 normal_count++;
                             }
@@ -163,6 +166,8 @@ namespace yny {
                             glm::vec3 tmp_tangent = {0, 0, 0};
                             tmp_tangent.x = vertices[lod_verteces_offset + i * diam_size + j].position.x
                                             - vertices[lod_verteces_offset + (i + i1) * diam_size + j].position.x;
+                            if (tmp_tangent.x < 0)
+                                tmp_tangent.x *= -1;
                             tangent_sum += tmp_tangent;
                             tangent_count++;
                         }

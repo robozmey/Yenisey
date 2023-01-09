@@ -13,6 +13,7 @@ namespace yny {
 
         if (gravity) {
             speed += glm::vec3(0, -9.8, 0) * dt;
+            printf("%f %f %f\n", tc->get_position().x, tc->get_position().y, tc->get_position().z);
 //            tc->move(gravity_speed * dt);
         }
     }

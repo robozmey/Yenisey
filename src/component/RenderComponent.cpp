@@ -49,8 +49,8 @@ uniform int material_type;
 uniform vec4 material_color;
 uniform sampler2D material_texture;
 
-uniform bool has_normal_map;
-uniform sampler2D normal_texture;
+uniform bool material_has_texture_normal;
+uniform sampler2D material_texture_normal;
 
 
 // LightSource
@@ -80,9 +80,9 @@ layout (location = 0) out vec4 out_color;
 
 void main()
 {
-    vec2 real_texcoord = position.xz / 100;
+    vec2 real_texcoord = position.xz / 10;
 
-    vec3 albedo = vec3(0.1, 0, 0.2);
+    vec3 albedo;
     if (material_type == one_color_material_type) {
         albedo = material_color.rgb;
     } else if (material_type == texture_material_type) {
@@ -91,10 +91,10 @@ void main()
 
     vec3 real_normal = normal;
 
-    if (has_normal_map) {
+    if (material_has_texture_normal) {
         vec3 bitangent = cross(tangent, normal);
         mat3 tbn = mat3(tangent, bitangent, normal);
-        real_normal = tbn * (texture(normal_texture, real_texcoord).xyz * 2.0 - vec3(1.0));
+        real_normal = tbn * (texture(material_texture_normal, real_texcoord).xyz * 2.0 - vec3(1.0));
     }
 
     if (light_type == ambient_light_type) {
@@ -106,7 +106,7 @@ void main()
         } else if (light_type == spot_light_type) {
             light_direction = normalize(position - spot_light_position);
         }
-        float diffuse = max(0.0, dot(normalize(normal), light_direction));
+        float diffuse = max(0.0, dot(normalize(real_normal), light_direction));
 
         vec3 color = albedo * (diffuse);
 
@@ -120,6 +120,9 @@ void main()
 
 //    out_color = vec4(mist_color, 1) * optical_depth + out_color * (1 - optical_depth);
 
+//    out_color = vec4(texture(material_texture_normal, real_texcoord).xyz, 1);
+//    out_color = vec4(vec3(material_has_texture_normal), 1);
+
 }
 )";
 
@@ -129,20 +132,7 @@ namespace yny {
 
     LightSource default_light_source = LightSource();
 
-    void RenderComponent::render(Camera* camera, LightSource* lightSource) {
-
-        MeshComponent* mc = static_cast<MeshComponent *>(componentsObject->components[Mesh]);
-        std::vector<vertex>& vertices = mc->vertices;
-        std::vector<uint32_t>& indices = mc->indices;
-
-        glBindVertexArray(vao);
-
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertices[0]), vertices.data(), GL_STATIC_DRAW);
-
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(indices[0]), indices.data(), GL_STATIC_DRAW);
-
+    void RenderComponent::write_program_uniforms(Camera *camera, LightSource *lightSource) {
         glUseProgram(program);
         {
             glm::vec3 camera_position = camera->get_camera_position();
@@ -170,6 +160,14 @@ namespace yny {
                 glActiveTexture(GL_TEXTURE0);
                 glBindTexture(GL_TEXTURE_2D, material->texture);
                 glUniform1i(material_texture_location, 0);
+
+                glUniform1i(material_has_texture_normal_location, material->has_texture_normal);
+                if (material->has_texture_normal) {
+                    glActiveTexture(GL_TEXTURE1);
+                    glBindTexture(GL_TEXTURE_2D, material->texture_normal);
+                    glUniform1i(material_texture_normal_location, 1);
+                }
+
             }
         }
 
@@ -182,6 +180,23 @@ namespace yny {
                 glUniform3fv(directional_light_direction_location, 1, reinterpret_cast<float *>(&lightSource->position));
             }
         }
+    }
+
+    void RenderComponent::render(Camera* camera, LightSource* lightSource) {
+
+        MeshComponent* mc = static_cast<MeshComponent *>(componentsObject->components[Mesh]);
+        std::vector<vertex>& vertices = mc->vertices;
+        std::vector<uint32_t>& indices = mc->indices;
+
+        glBindVertexArray(vao);
+
+        glBindBuffer(GL_ARRAY_BUFFER, vbo);
+        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertices[0]), vertices.data(), GL_STATIC_DRAW);
+
+        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(indices[0]), indices.data(), GL_STATIC_DRAW);
+
+        write_program_uniforms(camera, lightSource);
 
         glBindVertexArray(vao);
         glDrawElements(GL_TRIANGLES, indices.size(),  GL_UNSIGNED_INT, nullptr);
@@ -209,6 +224,8 @@ namespace yny {
         material_type_location = glGetUniformLocation(program, "material_type");
         material_color_location = glGetUniformLocation(program, "material_color");
         material_texture_location = glGetUniformLocation(program, "material_texture");
+        material_has_texture_normal_location = glGetUniformLocation(program, "material_has_texture_normal");
+        material_texture_normal_location = glGetUniformLocation(program, "material_texture_normal");
 
         light_type_location = glGetUniformLocation(program, "light_type");
         light_color_location = glGetUniformLocation(program, "light_color");

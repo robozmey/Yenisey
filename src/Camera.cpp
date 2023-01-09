@@ -28,7 +28,9 @@ namespace yny {
 
     glm::mat4 Camera::get_camera_view() {
         TransformComponent* tc = reinterpret_cast<TransformComponent *>(Object::components[Transform]);
-        return tc->get_transform();
+        glm::mat4 res = tc->get_transform();
+//        res = glm::translate(res, tc->get_position() * (-2.f));
+        return glm::inverse(res);
     }
 
     glm::mat4 Camera::get_camera_projection() {

@@ -40,6 +40,10 @@ namespace yny {
     }
 
     void SphereMeshComponent::update_vertices(Camera* scene_player) {
-        generate_sphere(100, 5);
+
+    }
+
+    SphereMeshComponent::SphereMeshComponent() {
+        generate_sphere(200, 10);
     }
 } // yny

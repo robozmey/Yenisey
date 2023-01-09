@@ -16,6 +16,9 @@ namespace yny {
         std::vector<vertex> vertices;
         std::vector<uint32_t> indices;
 
+        bool has_vbo = false;
+        GLuint vbo;
+
         virtual void update_vertices(Camera* scene_player);
 
         void apply_transform();

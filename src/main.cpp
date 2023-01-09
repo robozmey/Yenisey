@@ -31,6 +31,8 @@
 #include "WaterMeshComponent.h"
 #include "primitive/SphereMeshComponent.h"
 #include "PlayerScriptComponent.h"
+#include "GLTFMeshComponent.h"
+#include "GLTFRenderComponent.h"
 
 
 int main() {
@@ -79,7 +81,8 @@ int main() {
 
     std::map<SDL_Keycode, bool> button_down;
 
-    yny::Material snowMaterial(project_root + "/texture/snow2_d.jpg");
+    yny::Material snowMaterial(project_root + "/texture/snow01.png");
+//    snowMaterial.add_normal_map(project_root + "/texture/snow2_local.jpg");
 
     yny::Material waterMaterial(glm::vec3({0, 0, 0.6}));
 
@@ -87,18 +90,23 @@ int main() {
     scene.skybox = yny::Skybox();
 
     yny::Object playerObject("Player");
+//    playerObject.add_component(yny::Rigibody);
     playerObject.add_component(yny::Script, new yny::PlayerScriptComponent);
     yny::Camera playerCamera("Camera");
     playerObject.add_object(reinterpret_cast<yny::Object *>(&playerCamera));
     scene.add_object(&playerObject);
     scene.sceneCamera = &playerCamera;
 
+    yny::Object snowmobile("Snowmobile");
+    add_gltf_model(snowmobile, project_root + "/model/Macarena/Macarena.gltf");
+    scene.add_object(&snowmobile);
+
     yny::Object sphere("Sphere");
-    sphere.add_component(yny::Rigibody);
+//    sphere.add_component(yny::Rigibody);
     sphere.add_component(yny::Mesh, new yny::SphereMeshComponent());
     sphere.add_component(yny::Render);
-    reinterpret_cast<yny::TransformComponent *>(sphere.components[yny::Transform])->move({0, 1, 0});
-    scene.add_object(&sphere);
+    reinterpret_cast<yny::TransformComponent *>(sphere.components[yny::Transform])->move({0, 0, -1000});
+    playerObject.add_object(&sphere);
 
     yny::Object elevation_object("Terrain");
     elevation_object.add_component(yny::Mesh, new yny::ElevationMeshComponent());

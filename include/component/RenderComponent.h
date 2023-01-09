@@ -31,6 +31,8 @@ namespace yny {
         GLuint material_type_location;
         GLuint material_color_location;
         GLuint material_texture_location;
+        GLuint material_has_texture_normal_location;
+        GLuint material_texture_normal_location;
 
         GLuint light_type_location;
         GLuint light_color_location;
@@ -48,6 +50,8 @@ namespace yny {
     private:
         void create_render_component();
 
+    protected:
+        void write_program_uniforms(Camera* camera, LightSource* lightSource);
     };
 
 } // yny

@@ -11,10 +11,14 @@
 
 namespace yny {
 
+    glm::vec3 get_rotation(glm::mat4 transform);
+
     class TransformComponent : public Component {
     public:
 
         ComponentType type = Transform;
+
+        glm::mat4 transform = glm::mat4(1);
 
         glm::vec3 position = {0, 0, 0};
         glm::vec3 rotation = {0, 0, 0};
@@ -26,6 +30,9 @@ namespace yny {
 
         void move(glm::vec3 movement);
         void rotate(glm::vec3 rotation1);
+        void rotateX(float x);
+        void rotateY(float y);
+        void rotateZ(float z);
 
         glm::mat4 get_transform();
 

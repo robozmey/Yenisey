@@ -35,6 +35,8 @@ namespace yny {
 
         GLuint texture;
         std::string texture_path;
+
+        bool has_texture_normal = false;
         GLuint texture_normal;
         std::string texture_normal_path;
 
@@ -47,6 +49,8 @@ namespace yny {
         explicit Material(glm::vec4);
 
         explicit Material(std::string texture_path);
+
+        void add_normal_map(std::string texture_path);
 
     private:
         void create_one_color(glm::vec4);

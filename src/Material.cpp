@@ -24,8 +24,14 @@ namespace yny {
         create_one_color(color4);
     }
 
-    Material::Material(std::string texture_path) {
+    Material::Material(std::string texture_path) : texture_path(texture_path) {
         materialType = TextureMaterial;
         texture = load_texture(texture_path);
+    }
+
+    void Material::add_normal_map(std::string texture_path) {
+        has_texture_normal = true;
+        texture_normal_path = texture_path;
+        texture_normal = load_texture(texture_path);
     }
 } // yny

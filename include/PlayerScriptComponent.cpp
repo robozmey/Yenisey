@@ -45,34 +45,44 @@ namespace yny {
         float dt =  Component::componentsObject->scene->dt;
 
         TransformComponent* tc = reinterpret_cast<yny::TransformComponent *>(Component::componentsObject->components[Transform]);
+        printf("%f %f %f\n", tc->get_rotation().x, tc->get_rotation().y, tc->get_rotation().z);
 
         glm::vec3 movement(0);
         glm::vec3 rotation(0);
 
         if (button_down[SDLK_UP])
-            rotation[0] -= rotation_speed * dt;
-        if (button_down[SDLK_DOWN])
             rotation[0] += rotation_speed * dt;
+        if (button_down[SDLK_DOWN])
+            rotation[0] -= rotation_speed * dt;
 
         if (button_down[SDLK_LEFT])
-            rotation[1] -= rotation_speed * dt;
-        if (button_down[SDLK_RIGHT])
             rotation[1] += rotation_speed * dt;
+        if (button_down[SDLK_RIGHT])
+            rotation[1] -= rotation_speed * dt;
 
-        glm::vec3 camera_direction, side_direction;
-        camera_direction = glm::vec4(0, 0, movement_speed, 1) * rotation_matrix(tc->get_rotation());
+//        tc->rotateX(rotation[0]);
+//        tc->rotateY(rotation[1]);
+
+        auto rot = rotation;
+        tc->rotate(rot);
+
+        glm::vec3 forward_rotation = tc->get_rotation();
+        glm::vec3 forward_direction = (rotation_matrix(forward_rotation * 0.25f)) * glm::vec4(0, 0, movement_speed, 1);
 
         if (button_down[SDLK_w])
-            movement += camera_direction;
+            movement -= forward_direction;
         if (button_down[SDLK_s])
-            movement -= camera_direction;
+            movement += forward_direction;
 
-        side_direction = glm::vec4(movement_speed, 0, 0, 1) * rotation_matrix(tc->get_rotation());
+        glm::vec3 side_rotation = tc->get_rotation() + glm::vec3(0, glm::pi<float>() / 2, 0);
+        glm::vec3 side_direction = (rotation_matrix(side_rotation)) * glm::vec4(0, 0, movement_speed, 1);
 
         if (button_down[SDLK_a])
-            movement += side_direction;
-        if (button_down[SDLK_d])
             movement -= side_direction;
+        if (button_down[SDLK_d])
+            movement += side_direction;
+
+        tc->move(movement);
 
 
 //        float max_dist_x = wgs_distance(latitude + latitude_minute / 60.f,
@@ -102,9 +112,5 @@ namespace yny {
 //                longitude_minute -= 1;
 //            }
 //        }
-
-
-        tc->move(movement);
-        tc->rotate(rotation);
     }
 } // yny
