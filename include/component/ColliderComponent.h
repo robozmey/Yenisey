@@ -5,6 +5,7 @@
 #ifndef YENISEY_COLLIDERCOMPONENT_H
 #define YENISEY_COLLIDERCOMPONENT_H
 
+#include <utility>
 #include "component/Component.h"
 
 namespace yny {
@@ -14,6 +15,7 @@ namespace yny {
         BoxCollider,
         SphereCollider,
         MeshCollider,
+        ElevationCollider,
     };
 
     class ColliderComponent : public Component {
@@ -22,13 +24,19 @@ namespace yny {
 
         virtual bool is_collide(ColliderComponent*);
 
+        virtual std::pair<glm::vec3, glm::vec3> bbox();
+
         ColliderComponent();
     };
 
     class SphereColliderComponent : public ColliderComponent {
+    public:
         float radius = 1;
 
         bool is_collide(ColliderComponent*) override;
+
+        SphereColliderComponent();
+        explicit SphereColliderComponent(float radius);
     };
 
 } // yny

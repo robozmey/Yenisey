@@ -16,7 +16,7 @@ namespace yny {
         glm::vec3 speed = {0, 0, 0};
 
         bool gravity = true;
-        glm::vec3 gravity_speed = {0, -10, 0};
+        glm::vec3 gravity_speed = {0, -9.8, 0};
 
         void move(float dt);
 

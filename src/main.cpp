@@ -31,8 +31,12 @@
 #include "WaterMeshComponent.h"
 #include "primitive/SphereMeshComponent.h"
 #include "PlayerScriptComponent.h"
-#include "GLTFMeshComponent.h"
-#include "GLTFRenderComponent.h"
+#include "GLTF/GLTFMeshComponent.h"
+#include "GLTF/GLTFRenderComponent.h"
+#include "component/ColliderComponent.h"
+#include "elevation/ElevationColliderComponent.h"
+#include "ParticlesRenderComponent.h"
+#include "interface/InterfaceRenderComponent.h"
 
 
 int main() {
@@ -81,20 +85,33 @@ int main() {
 
     std::map<SDL_Keycode, bool> button_down;
 
-    yny::Material snowMaterial(project_root + "/texture/snow01.png");
-//    snowMaterial.add_normal_map(project_root + "/texture/snow2_local.jpg");
+    yny::ElevationDataObject elevationDataObject;
+
+    yny::Material snowMaterial(project_root + "/texture/Stylized_Stone_Floor_005_basecolor.jpg");
+    snowMaterial.add_normal_map(project_root + "/texture/Stylized_Stone_Floor_005_normal.jpg");
 
     yny::Material waterMaterial(glm::vec3({0, 0, 0.6}));
 
     yny::Scene scene;
     scene.skybox = yny::Skybox();
 
+    yny::InterfaceData interfaceData;
+
+    yny::Object interfaceObject("Interface");
+    interfaceObject.add_component(yny::Render, new yny::InterfaceRenderComponent(&interfaceData));
+    scene.add_object(&interfaceObject);
+
+    yny::Object particlesObject("Particles");
+    particlesObject.add_component(yny::Render, new yny::ParticlesRenderComponent);
+
     yny::Object playerObject("Player");
 //    playerObject.add_component(yny::Rigibody);
-    playerObject.add_component(yny::Script, new yny::PlayerScriptComponent);
+    playerObject.add_component(yny::Script, new yny::PlayerScriptComponent(&interfaceData, &elevationDataObject));
+//    playerObject.add_component(yny::Collider, new yny::SphereColliderComponent);
     yny::Camera playerCamera("Camera");
     playerObject.add_object(reinterpret_cast<yny::Object *>(&playerCamera));
     scene.add_object(&playerObject);
+    reinterpret_cast<yny::TransformComponent *>(playerObject.components[yny::Transform])->move({0, 600, 0});
     scene.sceneCamera = &playerCamera;
 
     yny::Object snowmobile("Snowmobile");
@@ -108,15 +125,25 @@ int main() {
     reinterpret_cast<yny::TransformComponent *>(sphere.components[yny::Transform])->move({0, 0, -1000});
     playerObject.add_object(&sphere);
 
+
+    yny::Object bigSphere("Big Sphere");
+//    bigSphere.add_component(yny::Rigibody);
+    bigSphere.add_component(yny::Mesh, new yny::SphereMeshComponent(1000));
+    bigSphere.add_component(yny::Render);
+    reinterpret_cast<yny::TransformComponent *>(bigSphere.components[yny::Transform])->move({-2000, 0, -10000});
+    scene.add_object(&bigSphere);
+
+
     yny::Object elevation_object("Terrain");
-    elevation_object.add_component(yny::Mesh, new yny::ElevationMeshComponent());
+    elevation_object.add_component(yny::Mesh, new yny::ElevationMeshComponent(&elevationDataObject));
     elevation_object.add_component(yny::Render, new yny::RenderComponent(&snowMaterial));
+//    elevation_object.add_component(yny::Collider, new yny::ElevationColliderComponent(&elevationDataObject));
     scene.add_object(&elevation_object);
 
     yny::Object waterObject("Water");
 //    waterObject.add_component(yny::Rigibody);
     waterObject.add_component(yny::Mesh, new yny::WaterMeshComponent());
-    waterObject.add_component(yny::Render, new yny::RenderComponent(&waterMaterial));
+//    waterObject.add_component(yny::Render, new yny::RenderComponent(&waterMaterial));
 //    scene.add_object(&waterObject);
 
     bool running = true;

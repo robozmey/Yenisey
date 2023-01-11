@@ -6,6 +6,15 @@
 
 namespace yny {
 
+    float wgs_distance(float lat1, float lon1, float lat2, float lon2) {
+        double p = 0.017453292519943295;    // Math.PI / 180
+        double a = 0.5 - cos((lat2 - lat1) * p)/2 +
+                   cos(lat1 * p) * cos(lat2 * p) *
+                   (1 - cos((lon2 - lon1) * p))/2;
+
+        return 12742 * asin(sqrt(a)); // 2 * R; R = 6371 km
+    }
+
     void ElevationDataObject::upload_lod_elevation_map(int latitude, int longitude) {
         lod_elevation_map_t& lod_elevation_map = lod_elevation_maps[{latitude, longitude}];
         lod_elevation_map.resize(lod_count);
@@ -67,5 +76,31 @@ namespace yny {
             return 0;
 
         return em[i][j];
+    }
+
+    void
+    ElevationDataObject::move(int add_latitude, int add_longitude, int add_latitude_minute, int add_longitude_minute) {
+        latitude += add_latitude;
+        longitude += add_longitude;
+        latitude_minute += add_latitude_minute;
+        longitude_minute += add_longitude_minute;
+
+        while(latitude_minute >= 60) {
+            latitude_minute -= 60;
+            latitude++;
+        }
+        while(latitude_minute < 0) {
+            latitude_minute += 60;
+            latitude--;
+        }
+
+        while(longitude_minute >= 60) {
+            longitude_minute -= 60;
+            longitude++;
+        }
+        while(longitude_minute < 0) {
+            longitude_minute += 60;
+            longitude--;
+        }
     }
 } // yny

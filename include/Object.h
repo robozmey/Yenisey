@@ -5,6 +5,15 @@
 #ifndef YENISEY_OBJECT_H
 #define YENISEY_OBJECT_H
 
+#ifdef WIN32
+#include <SDL.h>
+#undef main
+#else
+#include <SDL2/SDL.h>
+#endif
+
+#include <GL/glew.h>
+
 #include "component/Component.h"
 #include "LightSource.h"
 
@@ -35,8 +44,11 @@ namespace yny {
 
         virtual void update_vertices(Camera* scene_player);
 
-        virtual void render(Camera* scene_player, LightSource* lightSource);
-        virtual void render(Camera* scene_player);
+        virtual void light_render(Camera* scene_player, LightSource* lightSource);
+        virtual void light_render(Camera* scene_player);
+
+        virtual void render(Camera* scene_player, GLuint light_texture);
+        virtual void render_interface(Camera* scene_player, GLuint light_texture);
 
         virtual void update();
 

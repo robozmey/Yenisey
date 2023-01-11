@@ -14,12 +14,13 @@ namespace yny {
     public:
         int lod_count = 3;
 
-        ElevationDataObject* elevationDataObject{};
+        ElevationDataObject* elevationDataObject;
         int latitude_minute = 0, longitude_minute = 0;
 
         void update_vertices(Camera* scene_player) override;
 
         ElevationMeshComponent();
+        ElevationMeshComponent(ElevationDataObject* elevationDataObject);
 
     private:
         void recalc_terrain(Camera* scene_player);

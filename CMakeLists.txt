@@ -33,7 +33,7 @@ add_executable(Yenisey
         src/component/TransformComponent.cpp
         src/component/RenderComponent.cpp
         src/elevation/elevation.cpp
-        src/elevation/ElevationDataObject.cpp include/component/RigibodyComponent.h src/component/RigibodyComponent.cpp src/WaterRenderComponent.cpp src/component/ColliderComponent.cpp src/component/MeshComponent.cpp src/elevation/ElevationMeshComponent.cpp include/primitive/SphereMeshComponent.cpp src/WaterMeshComponent.cpp src/Material.cpp include/LightSource.cpp include/Input.cpp include/component/ScriptComponent.cpp include/PlayerScriptComponent.cpp src/gltf_loader.cpp include/GLTFMeshComponent.cpp include/GLTFRenderComponent.cpp)
+        src/elevation/ElevationDataObject.cpp include/component/RigibodyComponent.h src/component/RigibodyComponent.cpp src/WaterRenderComponent.cpp src/component/ColliderComponent.cpp src/component/MeshComponent.cpp src/elevation/ElevationMeshComponent.cpp src/primitive/SphereMeshComponent.cpp src/WaterMeshComponent.cpp src/Material.cpp src/LightSource.cpp src/Input.cpp src/component/ScriptComponent.cpp src/FreeCameraScriptComponent.cpp src/gltf_loader.cpp src/GLTFMeshComponent.cpp src/GLTFRenderComponent.cpp src/elevation/ElevationColliderComponent.cpp include/PlayerScriptComponent.cpp include/ParticlesRenderComponent.cpp include/msdf_loader.cpp include/interface/InterfaceData.cpp include/interface/InterfaceRenderComponent.cpp)
 
 target_include_directories(${TARGET_NAME} PUBLIC
         include

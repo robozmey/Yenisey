@@ -12,6 +12,8 @@ namespace yny {
     class SphereMeshComponent : public MeshComponent {
     public:
 
+        SphereMeshComponent(float radius);
+
         void generate_sphere(float radius, int quality);
 
         void update_vertices(Camera* scene_player) override;

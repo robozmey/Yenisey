@@ -28,7 +28,7 @@ namespace yny {
         GLuint vao, vbo, ebo;
         GLuint program;
 
-        void render(Camera* scene_player) override;
+        void render(Camera* scene_player, GLuint light_map) override;
 
         WaterRenderComponent();
 

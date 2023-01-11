@@ -48,27 +48,52 @@ namespace yny {
         }
     }
 
-    void Object::render(Camera* scene_player, LightSource* lightSource) {
+    void Object::light_render(Camera* scene_player, LightSource* lightSource) {
         if (components.contains(Render)) {
             RenderComponent* renderComponent = static_cast<RenderComponent *>(components[Render]);
-            renderComponent->render(scene_player, lightSource);
+            renderComponent->light_render(scene_player, lightSource);
         }
 
         for (Object* obj : objects) {
-            obj->render(scene_player, lightSource);
+            obj->light_render(scene_player, lightSource);
         }
     }
 
-    void Object::render(Camera* scene_player) {
+    void Object::light_render(Camera* scene_player) {
         if (components.contains(Render)) {
             RenderComponent* renderComponent = static_cast<RenderComponent *>(components[Render]);
-            renderComponent->render(scene_player);
+            renderComponent->light_render(scene_player);
         }
 
         for (Object* obj : objects) {
-            obj->render(scene_player);
+            obj->light_render(scene_player);
         }
     }
+
+    void Object::render(Camera* scene_player, GLuint light_map) {
+        if (components.contains(Render)) {
+            RenderComponent* renderComponent = static_cast<RenderComponent *>(components[Render]);
+            if (!renderComponent->is_interface)
+                renderComponent->render(scene_player, light_map);
+        }
+
+        for (Object* obj : objects) {
+            obj->render(scene_player, light_map);
+        }
+    }
+
+    void Object::render_interface(Camera* scene_player, GLuint light_map) {
+        if (components.contains(Render)) {
+            RenderComponent* renderComponent = static_cast<RenderComponent *>(components[Render]);
+            if (renderComponent->is_interface)
+                renderComponent->render(scene_player, light_map);
+        }
+
+        for (Object* obj : objects) {
+            obj->render_interface(scene_player, light_map);
+        }
+    }
+
 
     void Object::update() {
 
@@ -113,12 +138,34 @@ namespace yny {
         objects.push_back(obj);
     }
 
-    bool Object::is_collide(Object* other) {
-        if (components.contains(Collider) && other->components.contains(Collider)) {
-            yny::ColliderComponent* cc1 = reinterpret_cast<yny::ColliderComponent *>(components[yny::Collider]);
-            yny::ColliderComponent* cc2 = reinterpret_cast<yny::ColliderComponent *>(other->components[yny::Collider]);
+    bool is_collide_components(Object* object, Object* other_object) {
+        if (object->components.contains(Collider) && other_object->components.contains(Collider)) {
+            yny::ColliderComponent* cc1 = static_cast<yny::ColliderComponent *>(object->components[yny::Collider]);
+            yny::ColliderComponent* cc2 = static_cast<yny::ColliderComponent *>(other_object->components[yny::Collider]);
+            if (cc1 == cc2)
+                return false;
             return cc1->is_collide(cc2);
         }
+        return false;
+    }
+
+    bool Object::is_collide(Object* other_object) {
+
+        if (this == other_object)
+            return false;
+
+        if (is_collide_components(this, other_object) || is_collide_components(other_object, this))
+            return true;
+
+        for (Object* sub_other_object : other_object->objects) {
+            if (this->is_collide(sub_other_object))
+                return true;
+        }
+
+//        for (Object* sub_object : objects) {
+//            if (sub_object->is_collide(other_object))
+//                return true;
+//        }
         return false;
     }
 

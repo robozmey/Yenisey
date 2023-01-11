@@ -9,10 +9,10 @@
 
 #define GLM_FORCE_SWIZZLE
 #define GLM_ENABLE_EXPERIMENTAL
-#include <glm/vec3.hpp>
-#include <glm/mat4x4.hpp>
-#include <glm/gtx/quaternion.hpp>
-#include <glm/gtx/compatibility.hpp>
+#include "glm/vec3.hpp"
+#include "glm/mat4x4.hpp"
+#include "glm/gtx/quaternion.hpp"
+#include "glm/gtx/compatibility.hpp"
 
 struct gltf_model
 {

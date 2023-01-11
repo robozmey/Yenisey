@@ -2,9 +2,10 @@
 // Created by vladimir on 07.01.23.
 //
 
-#include "ScriptComponent.h"
+#include "component/ScriptComponent.h"
 
 namespace yny {
+
     void ScriptComponent::start() {
 
     }

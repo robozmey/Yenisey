@@ -1,4 +1,4 @@
-#include "gltf_loader.hpp"
+#include "GLTF/gltf_loader.hpp"
 
 #include <rapidjson/document.h>
 #include <rapidjson/istreamwrapper.h>

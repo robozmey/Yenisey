@@ -2,14 +2,14 @@
 // Created by vladimir on 07.01.23.
 //
 
-#include "GLTFRenderComponent.h"
+#include "GLTF/GLTFRenderComponent.h"
 
 namespace yny {
-    void GLTFRenderComponent::render(Camera* camera, LightSource* lightSource) {
+    void GLTFRenderComponent::render(Camera* camera, GLuint light_map) {
 
         GLTFMeshComponent* mc = static_cast<GLTFMeshComponent *>(componentsObject->components[Mesh]);
 
-        write_program_uniforms(camera, lightSource);
+        write_program_uniforms(camera, light_map);
 
         auto draw_meshes = [&](bool transparent) {
             for (auto const &mesh: mc->meshes) {

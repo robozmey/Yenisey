@@ -2,7 +2,7 @@
 // Created by vladimir on 02.01.23.
 //
 
-#include "SphereMeshComponent.h"
+#include "primitive/SphereMeshComponent.h"
 
 namespace yny {
     void SphereMeshComponent::generate_sphere(float radius, int quality) {
@@ -45,5 +45,9 @@ namespace yny {
 
     SphereMeshComponent::SphereMeshComponent() {
         generate_sphere(200, 10);
+    }
+
+    SphereMeshComponent::SphereMeshComponent(float radius) {
+        generate_sphere(radius, 10);
     }
 } // yny

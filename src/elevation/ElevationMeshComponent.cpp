@@ -45,7 +45,7 @@ namespace yny {
                                                              lod,
                                                              latitude_second,
                                                              longitude_second);
-                    float y = ed - 600; //(lod_count-1 - lod) * 100
+                    float y = ed; //(lod_count-1 - lod) * 100
                     float z = (j - diam_seconds) * diam_step * longitude_factor;
                     vertex v;
                     v.position = {x, y, z}; //
@@ -188,4 +188,7 @@ namespace yny {
     ElevationMeshComponent::ElevationMeshComponent() {
         elevationDataObject = new ElevationDataObject();
     }
+
+    ElevationMeshComponent::ElevationMeshComponent(ElevationDataObject* elevationDataObject) : elevationDataObject(elevationDataObject) {}
+
 } // yny

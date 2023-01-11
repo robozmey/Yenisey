@@ -62,7 +62,7 @@ void main()
 
 namespace yny {
 
-    void WaterRenderComponent::render(Camera* scene_player) {
+    void WaterRenderComponent::render(Camera* scene_player, GLuint light_map) {
 
         WaterMeshComponent* mc = static_cast<WaterMeshComponent *>(componentsObject->components[Mesh]);
         std::vector<vertex>& vertices = mc->vertices;

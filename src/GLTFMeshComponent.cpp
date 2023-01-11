@@ -2,7 +2,7 @@
 // Created by vladimir on 07.01.23.
 //
 
-#include "GLTFMeshComponent.h"
+#include "GLTF/GLTFMeshComponent.h"
 
 #include "stb_image.h"
 

@@ -11,6 +11,8 @@
 
 namespace yny {
 
+    glm::mat4 rotation_matrix(glm::vec3 rotation);
+
     glm::vec3 get_rotation(glm::mat4 transform);
 
     class TransformComponent : public Component {

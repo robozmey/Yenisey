@@ -7,6 +7,6 @@
 namespace yny {
     LightSource::LightSource() {
         lightSourceType = AmbientLight;
-        light_intensity = 0.5;
+        light_intensity = 0.2;
     }
 } // yny

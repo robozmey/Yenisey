@@ -6,17 +6,17 @@
 #include "Object.h"
 #include "glm/gtx/euler_angles.hpp"
 
-glm::mat4 rotation_matrix(glm::vec3 rotation) {
-    glm::mat4 view(1.f);
-    view = view * glm::eulerAngleYXZ(rotation.y, rotation.x, rotation.z);
+namespace yny {
+    glm::mat4 rotation_matrix(glm::vec3 rotation) {
+        glm::mat4 view(1.f);
+        view = view * glm::eulerAngleYXZ(rotation.y, rotation.x, rotation.z);
 //    view = glm::rotate(view, 1.f, rotation);
 //    view = glm::rotate(view, rotation.x, {1, 0, 0});
 //    view = glm::rotate(view, rotation.y, {0, 1, 0});
 //    view = glm::rotate(view, rotation.z, {0, 0, 1});
-    return view;
-}
+        return view;
+    }
 
-namespace yny {
     TransformComponent::TransformComponent() {}
 
     TransformComponent::TransformComponent(glm::vec3 position) : position(position) {}

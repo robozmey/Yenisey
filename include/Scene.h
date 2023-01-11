@@ -26,9 +26,27 @@ namespace yny {
 
         void update_vertices();
 
+        GLsizei light_map_resolution;
+        GLuint light_render_map;
+        GLuint light_render_fbo;
+        GLuint light_render_rbo;
+        GLuint light_map;
+        GLuint light_fbo;
+        GLuint light_rbo;
+
+        GLuint light_sum_vao;
+
+        GLuint screen_height_location;
+        GLuint screen_width_location;
+        GLuint light_render_map_location;
+
+        GLuint light_sum_program;
+
         void render();
 
         void update();
+
+        void create_scene();
 
         Scene();
 
