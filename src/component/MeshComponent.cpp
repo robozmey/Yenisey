@@ -4,7 +4,7 @@
 
 #include "component/MeshComponent.h"
 #include "component/TransformComponent.h"
-#include "Object.h"
+#include "base/Object.h"
 
 namespace yny {
     void MeshComponent::apply_transform() {

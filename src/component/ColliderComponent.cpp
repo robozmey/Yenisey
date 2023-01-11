@@ -4,7 +4,7 @@
 
 #include "component/ColliderComponent.h"
 #include "component/TransformComponent.h"
-#include "Object.h"
+#include "base/Object.h"
 
 namespace yny {
 

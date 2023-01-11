@@ -23,17 +23,17 @@ set(PROJECT_ROOT "${CMAKE_CURRENT_SOURCE_DIR}")
 
 add_executable(Yenisey
         src/main.cpp
-        src/Scene.cpp
-        src/Object.cpp
-        src/Camera.cpp
-        src/tools.cpp
-        src/Skybox.cpp
-        src/stb_image.c
+        src/base/Scene.cpp
+        src/base/Object.cpp
+        src/base/Camera.cpp
+        src/tools/tools.cpp
+        src/base/Skybox.cpp
+        src/tools/stb_image.c
         src/component/Component.cpp
         src/component/TransformComponent.cpp
         src/component/RenderComponent.cpp
         src/elevation/elevation.cpp
-        src/elevation/ElevationDataObject.cpp include/component/RigibodyComponent.h src/component/RigibodyComponent.cpp src/WaterRenderComponent.cpp src/component/ColliderComponent.cpp src/component/MeshComponent.cpp src/elevation/ElevationMeshComponent.cpp src/primitive/SphereMeshComponent.cpp src/WaterMeshComponent.cpp src/Material.cpp src/LightSource.cpp src/Input.cpp src/component/ScriptComponent.cpp src/FreeCameraScriptComponent.cpp src/gltf_loader.cpp src/GLTFMeshComponent.cpp src/GLTFRenderComponent.cpp src/elevation/ElevationColliderComponent.cpp include/PlayerScriptComponent.cpp include/ParticlesRenderComponent.cpp include/msdf_loader.cpp include/interface/InterfaceData.cpp include/interface/InterfaceRenderComponent.cpp)
+        src/elevation/ElevationDataObject.cpp include/component/RigibodyComponent.h src/component/RigibodyComponent.cpp src/water/WaterRenderComponent.cpp src/component/ColliderComponent.cpp src/component/MeshComponent.cpp src/elevation/ElevationMeshComponent.cpp src/primitive/SphereMeshComponent.cpp src/water/WaterMeshComponent.cpp src/base/Material.cpp src/base/LightSource.cpp src/base/Input.cpp src/component/ScriptComponent.cpp src/scripts/FreeCameraScriptComponent.cpp src/GLTF/gltf_loader.cpp src/GLTF/GLTFMeshComponent.cpp src/GLTF/GLTFRenderComponent.cpp src/elevation/ElevationColliderComponent.cpp src/scripts/PlayerScriptComponent.cpp src/ParticlesRenderComponent.cpp src/interface/msdf_loader.cpp src/interface/InterfaceData.cpp src/interface/InterfaceRenderComponent.cpp src/obj/ObjMeshComponent.cpp src/obj/obj_parser.cpp)
 
 target_include_directories(${TARGET_NAME} PUBLIC
         include

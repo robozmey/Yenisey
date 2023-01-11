@@ -7,9 +7,9 @@
 
 #include <vector>
 #include "Component.h"
-#include "Camera.h"
-#include "Material.h"
-#include "LightSource.h"
+#include "base/Camera.h"
+#include "base/Material.h"
+#include "base/LightSource.h"
 
 namespace yny {
 
@@ -40,6 +40,7 @@ namespace yny {
         glposition = gl_Position.xyz;
         tangent = mat3(model) * in_tangent;
         normal = mat3(model) * in_normal;
+        texcoord = in_texcoord;
     }
     )";
 
@@ -63,6 +64,8 @@ namespace yny {
     uniform vec3 camera_position;
     uniform mat4 transform;
 
+    uniform int has_texcoord;
+
     // Material
 
     int one_color_material_type = 0;
@@ -75,7 +78,10 @@ namespace yny {
     uniform bool material_has_texture_normal;
     uniform sampler2D material_texture_normal;
 
-    uniform vec3 glossiness;
+    uniform bool material_has_texture_glossiness;
+    uniform float material_glossiness;
+    uniform sampler2D material_texture_glossiness;
+
     uniform float power;
 
 
@@ -106,6 +112,10 @@ namespace yny {
 
     layout (location = 0) out vec4 out_color;
 
+
+    // Global
+    float real_glossiness = 0;
+
     vec3 diffuse(vec3 direction, vec3 real_normal, vec3 albedo) {
         return albedo * max(0.0, dot(real_normal, direction));
     }
@@ -113,7 +123,7 @@ namespace yny {
     vec3 specular(vec3 direction, vec3 real_normal, vec3 albedo) {
         vec3 reflected_direction = 2.0 * normal * dot(real_normal, direction) - direction;
         vec3 view_direction = normalize(camera_position - position);
-        return glossiness * albedo * pow(max(0.0, dot(reflected_direction, view_direction)), power);
+        return real_glossiness * albedo * pow(max(0.0, dot(reflected_direction, view_direction)), power);
 
     }
 
@@ -124,6 +134,9 @@ namespace yny {
     void main()
     {
         vec2 real_texcoord = position.xz / 10;
+        if (has_texcoord == 1) {
+            real_texcoord = texcoord;
+        }
 
         vec3 real_normal = (transform * vec4(normal, 0)).xyz;
 
@@ -133,8 +146,13 @@ namespace yny {
             real_normal = tbn * (texture(material_texture_normal, real_texcoord).xyz * 2.0 - vec3(1.0));
         }
 
+        real_glossiness = material_glossiness;
+        if (material_has_texture_glossiness) {
+            real_glossiness = texture(material_texture_glossiness, real_texcoord).r;
+        }
+
         if (light_type == ambient_light_type) {
-            out_color = vec4(vec3(light_intensity), 1);
+            out_color = vec4(light_color * light_intensity, 1);
         } else {
             vec3 light_direction;
             float real_light_intensity = light_intensity;
@@ -157,6 +175,8 @@ namespace yny {
             R"(#version 330 core
 
     uniform vec3 camera_position;
+
+    uniform int has_texcoord;
 
     // Material
 
@@ -206,6 +226,9 @@ namespace yny {
     void main()
     {
         vec2 real_texcoord = position.xz / 10;
+        if (has_texcoord == 1) {
+            real_texcoord = texcoord;
+        }
 
         vec3 albedo;
         if (material_type == one_color_material_type) {
@@ -250,12 +273,17 @@ namespace yny {
 
         GLuint camera_position_location;
 
+        GLuint has_texcoord_location;
+
         Material* material;
         GLuint material_type_location;
         GLuint material_color_location;
         GLuint material_texture_location;
         GLuint material_has_texture_normal_location;
         GLuint material_texture_normal_location;
+        GLuint material_has_texture_roughness_location;
+        GLuint material_roughness_location;
+        GLuint material_texture_roughness_location;
 
         GLuint screen_height_location;
         GLuint light_map_location;

@@ -9,34 +9,35 @@
 
 #define GLM_FORCE_SWIZZLE
 #define GLM_ENABLE_EXPERIMENTAL
-#include <glm/vec3.hpp>
-#include <glm/mat4x4.hpp>
-#include <glm/ext/matrix_transform.hpp>
-#include <glm/ext/matrix_clip_space.hpp>
-#include <glm/ext/scalar_constants.hpp>
-#include <glm/gtx/string_cast.hpp>
+#include "glm/vec3.hpp"
+#include "glm/mat4x4.hpp"
+#include "glm/ext/matrix_transform.hpp"
+#include "glm/ext/matrix_clip_space.hpp"
+#include "glm/ext/scalar_constants.hpp"
+#include "glm/gtx/string_cast.hpp"
 
 #include <iostream>
 #include <map>
 #include <chrono>
 
-#include "tools.h"
+#include "tools/tools.h"
 
-#include "Scene.h"
-#include "Skybox.h"
+#include "base/Scene.h"
+#include "base/Skybox.h"
 #include "component/TransformComponent.h"
 #include "component/RigibodyComponent.h"
-#include "WaterRenderComponent.h"
+#include "water/WaterRenderComponent.h"
 #include "elevation/ElevationMeshComponent.h"
-#include "WaterMeshComponent.h"
+#include "water/WaterMeshComponent.h"
 #include "primitive/SphereMeshComponent.h"
-#include "PlayerScriptComponent.h"
+#include "scripts/PlayerScriptComponent.h"
 #include "GLTF/GLTFMeshComponent.h"
 #include "GLTF/GLTFRenderComponent.h"
 #include "component/ColliderComponent.h"
 #include "elevation/ElevationColliderComponent.h"
 #include "ParticlesRenderComponent.h"
 #include "interface/InterfaceRenderComponent.h"
+#include "obj/ObjMeshComponent.h"
 
 
 int main() {
@@ -89,6 +90,7 @@ int main() {
 
     yny::Material snowMaterial(project_root + "/texture/Stylized_Stone_Floor_005_basecolor.jpg");
     snowMaterial.add_normal_map(project_root + "/texture/Stylized_Stone_Floor_005_normal.jpg");
+    snowMaterial.add_roughness_map(project_root + "/texture/Stylized_Stone_Floor_005_roughness.jpg");
 
     yny::Material waterMaterial(glm::vec3({0, 0, 0.6}));
 
@@ -103,10 +105,17 @@ int main() {
 
     yny::Object particlesObject("Particles");
     particlesObject.add_component(yny::Render, new yny::ParticlesRenderComponent);
+//    scene.add_object(&particlesObject);
+
+    yny::Object elevation_object("Terrain");
+    elevation_object.add_component(yny::Mesh, new yny::ElevationMeshComponent(&elevationDataObject));
+    elevation_object.add_component(yny::Render, new yny::RenderComponent(&snowMaterial));
+//    elevation_object.add_component(yny::Collider, new yny::ElevationColliderComponent(&elevationDataObject));
+    scene.add_object(&elevation_object);
 
     yny::Object playerObject("Player");
 //    playerObject.add_component(yny::Rigibody);
-    playerObject.add_component(yny::Script, new yny::PlayerScriptComponent(&interfaceData, &elevationDataObject));
+    playerObject.add_component(yny::Script, new yny::PlayerScriptComponent(&interfaceData, &elevationDataObject, &elevation_object));
 //    playerObject.add_component(yny::Collider, new yny::SphereColliderComponent);
     yny::Camera playerCamera("Camera");
     playerObject.add_object(reinterpret_cast<yny::Object *>(&playerCamera));
@@ -114,14 +123,26 @@ int main() {
     reinterpret_cast<yny::TransformComponent *>(playerObject.components[yny::Transform])->move({0, 600, 0});
     scene.sceneCamera = &playerCamera;
 
-    yny::Object snowmobile("Snowmobile");
-    add_gltf_model(snowmobile, project_root + "/model/Macarena/Macarena.gltf");
-    scene.add_object(&snowmobile);
+//    yny::Object snowmobile("Snowmobile");
+//    add_gltf_model(snowmobile, project_root + "/model/Macarena/Macarena.gltf");
+//    reinterpret_cast<yny::TransformComponent *>(snowmobile.components[yny::Transform])->move({0, 600, -3});
+//    reinterpret_cast<yny::TransformComponent *>(snowmobile.components[yny::Transform])->rotate({-glm::pi<float>() / 2, 0, 0});
+//    scene.add_object(&snowmobile);
 
-    yny::Object sphere("Sphere");
+    yny::Material papichMaterial(project_root + "/texture/papich.jpg");
+    yny::Object papich("Papich");
+    papich.add_component(yny::Mesh, new yny::ObjMeshComponent(project_root + "/model/papich.obj"));
+    papich.add_component(yny::Render, new yny::RenderComponent(&papichMaterial));
+    reinterpret_cast<yny::TransformComponent *>(papich.components[yny::Transform])->move({100, 600, -1000});
+    reinterpret_cast<yny::TransformComponent *>(papich.components[yny::Transform])->rotate({0, -2.5, 0});
+    scene.add_object(&papich);
+
+
+    yny::Material playerSphereMaterial(glm::vec3({1, 0, 0}));
+    yny::Object sphere("Player Sphere");
 //    sphere.add_component(yny::Rigibody);
     sphere.add_component(yny::Mesh, new yny::SphereMeshComponent());
-    sphere.add_component(yny::Render);
+    sphere.add_component(yny::Render, new yny::RenderComponent(&playerSphereMaterial));
     reinterpret_cast<yny::TransformComponent *>(sphere.components[yny::Transform])->move({0, 0, -1000});
     playerObject.add_object(&sphere);
 
@@ -133,12 +154,6 @@ int main() {
     reinterpret_cast<yny::TransformComponent *>(bigSphere.components[yny::Transform])->move({-2000, 0, -10000});
     scene.add_object(&bigSphere);
 
-
-    yny::Object elevation_object("Terrain");
-    elevation_object.add_component(yny::Mesh, new yny::ElevationMeshComponent(&elevationDataObject));
-    elevation_object.add_component(yny::Render, new yny::RenderComponent(&snowMaterial));
-//    elevation_object.add_component(yny::Collider, new yny::ElevationColliderComponent(&elevationDataObject));
-    scene.add_object(&elevation_object);
 
     yny::Object waterObject("Water");
 //    waterObject.add_component(yny::Rigibody);

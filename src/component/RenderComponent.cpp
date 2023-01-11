@@ -2,9 +2,9 @@
 // Created by vladimir on 02.01.23.
 //
 
-#include "Object.h"
+#include "base/Object.h"
 #include "component/RenderComponent.h"
-#include "tools.h"
+#include "tools/tools.h"
 #include "component/TransformComponent.h"
 #include "component/MeshComponent.h"
 
@@ -52,6 +52,13 @@ namespace yny {
                     glActiveTexture(GL_TEXTURE1);
                     glBindTexture(GL_TEXTURE_2D, material->texture_normal);
                     glUniform1i(material_texture_normal_location, 1);
+                }
+                if (material->has_texture_roughness) {
+                    glActiveTexture(GL_TEXTURE2);
+                    glBindTexture(GL_TEXTURE_2D, material->texture_roughness);
+                    glUniform1i(material_texture_roughness_location, 2);
+                } else {
+                    glUniform1f(material_roughness_location, material->roughness);
                 }
 
             }
@@ -106,6 +113,8 @@ namespace yny {
         glUseProgram(light_program);
         write_light_program_uniforms(camera, lightSource);
 
+        glUniform1i(has_texcoord_location, mc->has_texcoord);
+
         glBindVertexArray(vao);
         glDrawElements(GL_TRIANGLES, indices.size(),  GL_UNSIGNED_INT, nullptr);
     }
@@ -132,6 +141,8 @@ namespace yny {
         glUseProgram(program);
         write_program_uniforms(camera, light_map);
 
+        glUniform1i(has_texcoord_location, mc->has_texcoord);
+
         glBindVertexArray(vao);
         glDrawElements(GL_TRIANGLES, indices.size(),  GL_UNSIGNED_INT, nullptr);
     }
@@ -144,11 +155,16 @@ namespace yny {
         projection_location = glGetUniformLocation(program, "projection");
         transform_location = glGetUniformLocation(program, "transform");
 
+        has_texcoord_location = glGetUniformLocation(program, "has_texcoord");
+
         material_type_location = glGetUniformLocation(program, "material_type");
         material_color_location = glGetUniformLocation(program, "material_color");
         material_texture_location = glGetUniformLocation(program, "material_texture");
         material_has_texture_normal_location = glGetUniformLocation(program, "material_has_texture_normal");
         material_texture_normal_location = glGetUniformLocation(program, "material_texture_normal");
+        material_has_texture_roughness_location = glGetUniformLocation(program, "material_has_texture_roughness");;
+        material_roughness_location = glGetUniformLocation(program, "material_roughness");;
+        material_texture_roughness_location = glGetUniformLocation(program, "material_texture_roughness");;
 
         screen_height_location = glGetUniformLocation(program, "screen_height");
         light_map_location = glGetUniformLocation(program, "light_map");
@@ -187,6 +203,8 @@ namespace yny {
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, sizeof(vertex), (void *)offsetof(vertex, normal));
         glEnableVertexAttribArray(2);
         glVertexAttribPointer(2, 3, GL_FLOAT, GL_FALSE, sizeof(vertex), (void *)offsetof(vertex, tangent));
+        glEnableVertexAttribArray(3);
+        glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(vertex), (void *)offsetof(vertex, texcoord));
     }
 
     RenderComponent::RenderComponent() : material(&default_material) {

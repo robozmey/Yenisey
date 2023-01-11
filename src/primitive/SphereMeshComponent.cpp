@@ -44,10 +44,12 @@ namespace yny {
     }
 
     SphereMeshComponent::SphereMeshComponent() {
-        generate_sphere(200, 10);
+        has_texcoord = 0;
+        generate_sphere(100, 10);
     }
 
     SphereMeshComponent::SphereMeshComponent(float radius) {
+        has_texcoord = 0;
         generate_sphere(radius, 10);
     }
 } // yny

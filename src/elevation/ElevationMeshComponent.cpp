@@ -4,7 +4,7 @@
 
 #include "elevation/ElevationMeshComponent.h"
 #include "elevation/elevation.h"
-#include "tools.h"
+#include "tools/tools.h"
 
 namespace yny {
     void ElevationMeshComponent::recalc_terrain(Camera* scene_player) {
@@ -186,9 +186,12 @@ namespace yny {
     }
 
     ElevationMeshComponent::ElevationMeshComponent() {
+        has_texcoord = 0;
         elevationDataObject = new ElevationDataObject();
     }
 
-    ElevationMeshComponent::ElevationMeshComponent(ElevationDataObject* elevationDataObject) : elevationDataObject(elevationDataObject) {}
+    ElevationMeshComponent::ElevationMeshComponent(ElevationDataObject* elevationDataObject) : elevationDataObject(elevationDataObject) {
+        has_texcoord = 0;
+    }
 
 } // yny

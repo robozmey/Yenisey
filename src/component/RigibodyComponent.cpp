@@ -2,8 +2,8 @@
 // Created by vladimir on 02.01.23.
 //
 
-#include "Object.h"
-#include "Scene.h"
+#include "base/Object.h"
+#include "base/Scene.h"
 #include "component/RigibodyComponent.h"
 #include "component/TransformComponent.h"
 

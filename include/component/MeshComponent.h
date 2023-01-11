@@ -7,7 +7,7 @@
 
 #include <vector>
 #include "Component.h"
-#include "Camera.h"
+#include "base/Camera.h"
 
 namespace yny {
     class MeshComponent : public Component{
@@ -15,6 +15,8 @@ namespace yny {
 
         std::vector<vertex> vertices;
         std::vector<uint32_t> indices;
+
+        int has_texcoord = 1;
 
         bool has_vbo = false;
         GLuint vbo;

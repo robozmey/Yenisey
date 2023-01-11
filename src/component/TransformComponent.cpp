@@ -3,7 +3,7 @@
 //
 
 #include "component/TransformComponent.h"
-#include "Object.h"
+#include "base/Object.h"
 #include "glm/gtx/euler_angles.hpp"
 
 namespace yny {

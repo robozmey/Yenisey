@@ -21,7 +21,7 @@ namespace yny {
         float angular_velocity;
 
         particle(std::default_random_engine& rng) {
-            printf("dgsdsdg");
+//            printf("dgsdsdg");
 
             position.x = std::uniform_real_distribution<float>{-1.f, 1.0f}(rng);
             position.y = std::uniform_real_distribution<float>{0.0f, 1.0f}(rng);
@@ -42,6 +42,9 @@ namespace yny {
     public:
         std::default_random_engine rng;
         std::vector<particle> particles;
+
+        void light_render(Camera* camera, LightSource* lightSource) override;
+        void light_render(Camera* camera) override;
 
         void render(Camera* camera, GLuint light_map) override;
 
