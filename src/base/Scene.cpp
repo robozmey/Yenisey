@@ -60,25 +60,39 @@ namespace yny {
         glEnable(GL_DEPTH_TEST);
         glEnable(GL_CULL_FACE);
 
-        /// LIGHT
-        std::vector<LightSource*> lightSources;
+        lightSources[0]->direction = {sin(time / 2), 1, cos(time / 2)};
 
-        LightSource ambientLightSource = LightSource();
-        lightSources.push_back(&ambientLightSource);
+        /// Render SHADOWS
+//        for (auto vertex : scene.vertices) {
+//            for (int i = 0; i < 3; i++) {
+//                bounding_box[i][0] = std::min(bounding_box[i][0], vertex.position[i]);
+//                bounding_box[i][1] = std::max(bounding_box[i][1], vertex.position[i]);
+//            }
+//        }
 
-        LightSource directionalLightSource = LightSource();
-        directionalLightSource.lightSourceType = DirectionalLight;
-        directionalLightSource.direction = {sin(time), 1, cos(time)};
-        lightSources.push_back(&directionalLightSource);
+        C = {0, 0, 0};
+//        for (auto vertex : scene.vertices) {
+//            for (int i = 0; i < 3; i++) {
+//                C[i] += vertex.position[i];
+//            }
+//        }
+//        for (int i = 0; i < 3; i++) {
+//            C[i] /= scene.vertices.size();
+//        }
 
-        LightSource spotLightSource = LightSource();
-        spotLightSource.lightSourceType = SpotLight;
-        spotLightSource.position = {0, -500, 0};
-//        lightSources.push_back(&spotLightSource);
+        for (auto lightSource : lightSources) {
+            lightSource->shadow_render(scene);
+        }
+
+
+        /// Render LIGHTS
+        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, 0);
+        glViewport(0, 0, sceneCamera->width, sceneCamera->height);
 
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, light_fbo);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         glClearColor(0, 0, 0, 0);
+        glViewport(0, 0, sceneCamera->width, sceneCamera->height);
 
         for (auto lightSource : lightSources) {
             /// Render Light
@@ -138,6 +152,13 @@ namespace yny {
 //        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         this->Object::render_interface(sceneCamera, light_map);
+
+//        glClearColor(0.8f, 0.8f, 1.f, 0.f);
+//        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+//
+////        lightSources[0]->shadow_render(this);
+//        this->Object::shadow_render(lightSources[0]);
+//        this->Object::light_render(sceneCamera, lightSources[0]);
 
     }
 
@@ -199,6 +220,21 @@ namespace yny {
         light_render_map_location = glGetUniformLocation(light_sum_program, "light_render_map");
 
         glGenVertexArrays(1, &light_sum_vao);
+
+
+
+        /// LIGHT
+
+        LightSource* directionalLightSource = new LightSource(DirectionalLight);
+        directionalLightSource->direction = {sin(time / 2), 1, cos(time / 2)};
+        lightSources.push_back(directionalLightSource);
+
+        LightSource* ambientLightSource = new LightSource();
+        lightSources.push_back(ambientLightSource);
+
+        LightSource* spotLightSource = new LightSource(SpotLight);
+        spotLightSource->position = {0, -500, 0};
+//        lightSources.push_back(spotLightSource);
 
     }
 

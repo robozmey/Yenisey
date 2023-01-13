@@ -26,6 +26,11 @@ namespace yny {
 
         void update_vertices();
 
+        glm::vec3 C;
+        float bounding_box[3][2] = {{-10000, 10000}, {-10000, 10000}, {-10000, 10000}};
+
+        std::vector<LightSource*> lightSources;
+
         GLsizei light_map_resolution;
         GLuint light_render_map;
         GLuint light_render_fbo;

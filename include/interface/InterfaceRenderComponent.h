@@ -84,6 +84,8 @@ namespace yny {
         GLuint sdf_scale_location;
         GLuint sdf_texture_location;
 
+        virtual void shadow_render(LightSource* lightSource) override {}
+
         virtual void light_render(Camera* camera, LightSource* lightSource) override;
         virtual void light_render(Camera* camera) override;
 

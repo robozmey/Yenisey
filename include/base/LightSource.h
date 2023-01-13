@@ -6,6 +6,16 @@
 #define YENISEY_LIGHTSOURCE_H
 
 #include "glm/vec3.hpp"
+#include "glm/ext/matrix_float4x4.hpp"
+
+#ifdef WIN32
+#include <SDL.h>
+#undef main
+#else
+#include <SDL2/SDL.h>
+#endif
+
+#include <GL/glew.h>
 
 namespace yny {
 
@@ -14,6 +24,8 @@ namespace yny {
         DirectionalLight,
         SpotLight,
     };
+
+    class Scene;
 
     class LightSource {
     public:
@@ -27,7 +39,19 @@ namespace yny {
 
         glm::vec3 attenuation = {1.0, 0.0, 0.001};
 
+        int shadow_map_resolution = 512;
+        GLuint shadow_map;
+        GLuint shadow_fbo;
+        GLuint shadow_rbo;
+
+        glm::mat4 shadow_transform;
+
+        void shadow_render(Scene* scene);
+
         LightSource();
+        LightSource(LightSourceType lightSourceType);
+    private:
+        void create_light_source();
     };
 
 } // yny

@@ -83,6 +83,8 @@ namespace yny {
 
         glBindVertexArray(text_vao);
         glDrawArrays(GL_TRIANGLES, 0, vertexes.size());
+
+        glDisable(GL_BLEND);
     }
 
     InterfaceRenderComponent::InterfaceRenderComponent(InterfaceData* interfaceData) : interfaceData(interfaceData) {

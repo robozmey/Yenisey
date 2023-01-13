@@ -13,11 +13,15 @@ namespace yny {
     }
 
     glm::vec3 Camera::get_camera_position() {
+        if (is_shadow_camera)
+            return camera_position;
         TransformComponent* tc = reinterpret_cast<TransformComponent *>(Object::components[Transform]);
         return tc->get_position();
     }
 
     glm::vec3 Camera::get_camera_rotation() {
+        if (is_shadow_camera)
+            return camera_rotation;
         TransformComponent* tc = reinterpret_cast<TransformComponent *>(Object::components[Transform]);
         return tc->get_rotation();
     }
@@ -27,6 +31,8 @@ namespace yny {
     }
 
     glm::mat4 Camera::get_camera_view() {
+        if (is_shadow_camera)
+            return view;
         TransformComponent* tc = reinterpret_cast<TransformComponent *>(Object::components[Transform]);
         return glm::inverse(tc->get_transform());
         glm::mat4 res =  glm::inverse(rotation_matrix(tc->get_rotation()));
@@ -35,6 +41,8 @@ namespace yny {
     }
 
     glm::mat4 Camera::get_camera_projection() {
+        if (is_shadow_camera)
+            return projection;
         float top = near;
         float right = (top * width) / height;
 

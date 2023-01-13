@@ -8,6 +8,12 @@
 #include "component/TransformComponent.h"
 #include "component/MeshComponent.h"
 
+/// 0 - material albedo
+/// 1 - material normal
+/// 2 - material roughness
+/// 3 - light map
+/// 4 - shadow map
+
 namespace yny {
 
     Material default_material = Material();
@@ -31,6 +37,8 @@ namespace yny {
     }
 
     void RenderComponent::write_program_object_uniforms() {
+        glUniform1f(gamma_location, 2.2f);
+
         glm::mat4 transform;
         {
             TransformComponent* tc = reinterpret_cast<TransformComponent *>(componentsObject->components[Transform]);
@@ -63,6 +71,11 @@ namespace yny {
 
             }
         }
+
+        {   // Mesh
+            MeshComponent* mc = static_cast<MeshComponent *>(componentsObject->components[Mesh]);
+            glUniform1i(has_texcoord_location, mc->has_texcoord);
+        }
     }
 
     void RenderComponent::write_program_light_source_uniforms(LightSource* lightSource) {
@@ -72,6 +85,14 @@ namespace yny {
             glUniform3fv(light_color_location, 1, reinterpret_cast<float *>(&lightSource->color));
             if (lightSource->lightSourceType == DirectionalLight) {
                 glUniform3fv(directional_light_direction_location, 1, reinterpret_cast<float *>(&lightSource->direction));
+
+                glActiveTexture(GL_TEXTURE4);
+                glBindTexture(GL_TEXTURE_2D, lightSource->shadow_map);
+                glUniform1i(shadow_map_location, 4);
+                glActiveTexture(GL_TEXTURE0);
+
+                glUniformMatrix4fv(shadow_transform_location, 1, GL_FALSE, reinterpret_cast<float *>(&lightSource->shadow_transform));
+
             } else if (lightSource->lightSourceType == SpotLight) {
                 glUniform3fv(spot_light_position_location, 1, reinterpret_cast<float *>(&lightSource->position));
                 glUniform3fv(spot_light_attenuation_location, 1, reinterpret_cast<float *>(&lightSource->attenuation));
@@ -85,18 +106,22 @@ namespace yny {
         write_program_light_source_uniforms(LightSource);
     }
 
+    void RenderComponent::write_shadow_program_uniforms(LightSource *LightSource) {
+        write_program_object_uniforms();
+        write_program_light_source_uniforms(LightSource);
+    }
+
     void RenderComponent::write_program_uniforms(Camera *camera, GLuint light_map) {
         write_program_camera_uniforms(camera);
         write_program_object_uniforms();
 
-        glActiveTexture(GL_TEXTURE2);
+        glActiveTexture(GL_TEXTURE3);
         glBindTexture(GL_TEXTURE_2D, light_map);
-        glUniform1i(light_map_location, 2);
+        glUniform1i(light_map_location, 3);
 
     }
 
-    void RenderComponent::light_render(Camera* camera, LightSource* lightSource) {
-
+    int RenderComponent::write_in_buffer() {
         MeshComponent* mc = static_cast<MeshComponent *>(componentsObject->components[Mesh]);
         std::vector<vertex>& vertices = mc->vertices;
         std::vector<uint32_t>& indices = mc->indices;
@@ -109,14 +134,29 @@ namespace yny {
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(indices[0]), indices.data(), GL_STATIC_DRAW);
 
+        return indices.size();
+    }
+
+    void RenderComponent::shadow_render(LightSource *lightSource) {
+        int indices_size = write_in_buffer();
+
+        getUniformLocations(shadow_program);
+        glUseProgram(shadow_program);
+        write_shadow_program_uniforms(lightSource);
+
+        glBindVertexArray(vao);
+        glDrawElements(GL_TRIANGLES, indices_size,  GL_UNSIGNED_INT, nullptr);
+    }
+
+    void RenderComponent::light_render(Camera* camera, LightSource* lightSource) {
+        int indices_size = write_in_buffer();
+
         getUniformLocations(light_program);
         glUseProgram(light_program);
         write_light_program_uniforms(camera, lightSource);
 
-        glUniform1i(has_texcoord_location, mc->has_texcoord);
-
         glBindVertexArray(vao);
-        glDrawElements(GL_TRIANGLES, indices.size(),  GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, indices_size,  GL_UNSIGNED_INT, nullptr);
     }
 
     void RenderComponent::light_render(Camera* scene_player) {
@@ -124,31 +164,20 @@ namespace yny {
     }
 
     void RenderComponent::render(Camera* camera, GLuint light_map) {
-
-        MeshComponent* mc = static_cast<MeshComponent *>(componentsObject->components[Mesh]);
-        std::vector<vertex>& vertices = mc->vertices;
-        std::vector<uint32_t>& indices = mc->indices;
-
-        glBindVertexArray(vao);
-
-        glBindBuffer(GL_ARRAY_BUFFER, vbo);
-        glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(vertices[0]), vertices.data(), GL_STATIC_DRAW);
-
-        glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
-        glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(indices[0]), indices.data(), GL_STATIC_DRAW);
+        int indices_size = write_in_buffer();
 
         getUniformLocations(program);
         glUseProgram(program);
         write_program_uniforms(camera, light_map);
 
-        glUniform1i(has_texcoord_location, mc->has_texcoord);
-
         glBindVertexArray(vao);
-        glDrawElements(GL_TRIANGLES, indices.size(),  GL_UNSIGNED_INT, nullptr);
+        glDrawElements(GL_TRIANGLES, indices_size,  GL_UNSIGNED_INT, nullptr);
     }
 
     void RenderComponent::getUniformLocations(GLuint program) {
         camera_position_location = glGetUniformLocation(program, "camera_position");
+
+        gamma_location = glGetUniformLocation(program, "gamma");
 
         model_location = glGetUniformLocation(program, "model");
         view_location = glGetUniformLocation(program, "view");
@@ -168,6 +197,8 @@ namespace yny {
 
         screen_height_location = glGetUniformLocation(program, "screen_height");
         light_map_location = glGetUniformLocation(program, "light_map");
+        shadow_map_location = glGetUniformLocation(program, "shadow_map");
+        shadow_transform_location = glGetUniformLocation(program, "shadow_transform");
 
         light_type_location = glGetUniformLocation(program, "light_type");
         light_color_location = glGetUniformLocation(program, "light_color");
@@ -181,15 +212,17 @@ namespace yny {
 
         type = Render;
 
+        auto shadow_vertex_shader = create_shader(GL_VERTEX_SHADER, shadow_vertex_shader_source);
+        auto shadow_fragment_shader = create_shader(GL_FRAGMENT_SHADER, shadow_fragment_shader_source);
+        shadow_program = create_program(shadow_vertex_shader, shadow_fragment_shader);
+
         auto light_vertex_shader = create_shader(GL_VERTEX_SHADER, vertex_shader_source);
         auto light_fragment_shader = create_shader(GL_FRAGMENT_SHADER, light_fragment_shader_source);
         light_program = create_program(light_vertex_shader, light_fragment_shader);
-        getUniformLocations(light_program);
 
         auto vertex_shader = create_shader(GL_VERTEX_SHADER, vertex_shader_source);
         auto fragment_shader = create_shader(GL_FRAGMENT_SHADER, fragment_shader_source);
         program = create_program(vertex_shader, fragment_shader);
-        getUniformLocations(program);
 
         glGenVertexArrays(1, &vao);
         glGenBuffers(1, &vbo);

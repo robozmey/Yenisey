@@ -48,6 +48,17 @@ namespace yny {
         }
     }
 
+    void Object::shadow_render(LightSource* lightSource) {
+        if (components.contains(Render)) {
+            RenderComponent* renderComponent = static_cast<RenderComponent *>(components[Render]);
+            renderComponent->shadow_render(lightSource);
+        }
+
+        for (Object* obj : objects) {
+            obj->shadow_render(lightSource);
+        }
+    };
+
     void Object::light_render(Camera* scene_player, LightSource* lightSource) {
         if (components.contains(Render)) {
             RenderComponent* renderComponent = static_cast<RenderComponent *>(components[Render]);
@@ -177,5 +188,5 @@ namespace yny {
     Object::Object(std::string name) : name(name) {
         parentObject = nullptr;
         add_component(Transform);
-    };
+    }
 } // yny

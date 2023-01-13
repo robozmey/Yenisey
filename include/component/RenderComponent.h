@@ -44,10 +44,25 @@ namespace yny {
     }
     )";
 
+    const char shadow_vertex_shader_source[] =
+            R"(#version 330 core
+
+    uniform mat4 model;
+    uniform mat4 transform;
+    uniform mat4 shadow_transform;
+
+    layout (location = 0) in vec3 in_position;
+
+    void main()
+    {
+        gl_Position = shadow_transform * transform * vec4(in_position, 1.0);
+    }
+    )";
+
     const char shadow_fragment_shader_source[] =
             R"(#version 330 core
 
-    out vec4 out_coords;
+    layout (location = 0) out vec4 out_coords;
 
     void main()
     {
@@ -63,6 +78,8 @@ namespace yny {
 
     uniform vec3 camera_position;
     uniform mat4 transform;
+
+    uniform mat4 shadow_transform;
 
     uniform int has_texcoord;
 
@@ -94,6 +111,7 @@ namespace yny {
     uniform int light_type;
     uniform vec3 light_color;
     uniform float light_intensity;
+    uniform sampler2D shadow_map;
     uniform vec3 directional_light_direction;
     uniform vec3 spot_light_position;
     uniform vec3 spot_light_attenuation;
@@ -133,7 +151,7 @@ namespace yny {
 
     void main()
     {
-        vec2 real_texcoord = position.xz / 10;
+        vec2 real_texcoord = (transform * vec4(position, 1)).xz / 1000;
         if (has_texcoord == 1) {
             real_texcoord = texcoord;
         }
@@ -156,12 +174,34 @@ namespace yny {
         } else {
             vec3 light_direction;
             float real_light_intensity = light_intensity;
+
             if (light_type == directional_light_type) {
                 light_direction = directional_light_direction;
+
+                vec4 shadow_pos = shadow_transform * transform * vec4(position, 1.0);
+                shadow_pos /= shadow_pos.w;
+                shadow_pos = shadow_pos * 0.5 + vec4(0.5);
+
+                vec2 data = texture(shadow_map, shadow_pos.xy).rg;
+
+                float mu = data.r;
+                float sigma = data.g - mu * mu;
+                float z = shadow_pos.z - 0.001;
+                float factor = (z < mu) ? 1.0 : sigma / (sigma + (z - mu) * (z - mu));
+
+                float delta = 0.125;
+                if (factor < delta) {
+                    factor = 0;
+                }
+                else {
+                    factor = (factor - delta) / (1 - delta);
+                }
+                real_light_intensity = light_intensity * factor;
+
             } else if (light_type == spot_light_type) {
                 light_direction = normalize(position - spot_light_position);
                 float dist = distance(position, spot_light_position);
-                real_light_intensity = 1 / (spot_light_attenuation.x + spot_light_attenuation.y * dist + spot_light_attenuation.z * dist * dist);
+                real_light_intensity = 1 / (spot_light_attenuation.x + spot_light_attenuation.y * dist + spot_light_attenuation.z * dist * dist) * light_intensity;
             }
             vec3 color = phong(light_direction, real_normal, light_color) * real_light_intensity;
 
@@ -174,7 +214,10 @@ namespace yny {
     const char fragment_shader_source[] =
             R"(#version 330 core
 
+    uniform float gamma;
+
     uniform vec3 camera_position;
+    uniform mat4 transform;
 
     uniform int has_texcoord;
 
@@ -225,7 +268,7 @@ namespace yny {
 
     void main()
     {
-        vec2 real_texcoord = position.xz / 10;
+        vec2 real_texcoord = (transform * vec4(position, 1)).xz / 1000;
         if (has_texcoord == 1) {
             real_texcoord = texcoord;
         }
@@ -253,6 +296,9 @@ namespace yny {
     //    out_color = vec4(texture(material_texture_normal, real_texcoord).xyz, 1);
     //    out_color = vec4(vec3(material_has_texture_normal), 1);
 
+
+//        out_color = vec4(pow(abs(out_color.rgb), vec3(gamma)), 1);
+
     }
     )";
 
@@ -268,12 +314,15 @@ namespace yny {
         GLuint transform_location;
 
         GLuint vao, vbo, ebo;
+        GLuint shadow_program;
         GLuint light_program;
         GLuint program;
 
         GLuint camera_position_location;
 
         GLuint has_texcoord_location;
+
+        GLuint gamma_location;
 
         Material* material;
         GLuint material_type_location;
@@ -287,6 +336,8 @@ namespace yny {
 
         GLuint screen_height_location;
         GLuint light_map_location;
+        GLuint shadow_map_location;
+        GLuint shadow_transform_location;
 
         GLuint light_type_location;
         GLuint light_color_location;
@@ -294,6 +345,8 @@ namespace yny {
         GLuint directional_light_direction_location;
         GLuint spot_light_position_location;
         GLuint spot_light_attenuation_location;
+
+        virtual void shadow_render(LightSource* lightSource);
 
         virtual void light_render(Camera* camera, LightSource* lightSource);
         virtual void light_render(Camera* camera);
@@ -312,10 +365,13 @@ namespace yny {
         void write_program_object_uniforms();
         void write_program_light_source_uniforms(LightSource* lightSource);
 
+        void write_shadow_program_uniforms(LightSource *LightSource);
         void write_light_program_uniforms(Camera* camera, LightSource* lightSource);
         void write_program_uniforms(Camera *camera, GLuint light_map);
 
         void getUniformLocations(GLuint program);
+
+        int write_in_buffer();
     };
 
 } // yny

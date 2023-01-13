@@ -159,7 +159,15 @@ int main() {
 //    waterObject.add_component(yny::Rigibody);
     waterObject.add_component(yny::Mesh, new yny::WaterMeshComponent());
 //    waterObject.add_component(yny::Render, new yny::RenderComponent(&waterMaterial));
-    scene.add_object(&waterObject);
+//    scene.add_object(&waterObject);
+
+    yny::Material obamaMaterial(project_root + "/texture/obama_prime.jpg");
+    yny::Object obama("Obama");
+    obama.add_component(yny::Mesh, new yny::ObjMeshComponent(project_root + "/model/obamaprisme.obj"));
+    obama.add_component(yny::Render, new yny::RenderComponent(&obamaMaterial));
+    reinterpret_cast<yny::TransformComponent *>(obama.components[yny::Transform])->move({-500, 600, -1000});
+    reinterpret_cast<yny::TransformComponent *>(obama.components[yny::Transform])->rotate({0, -2.5, 0});
+    scene.add_object(&obama);
 
     bool running = true;
     while (running)

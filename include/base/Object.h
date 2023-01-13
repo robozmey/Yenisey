@@ -44,6 +44,8 @@ namespace yny {
 
         virtual void update_vertices(Camera* scene_player);
 
+        virtual void shadow_render(LightSource* lightSource);
+
         virtual void light_render(Camera* scene_player, LightSource* lightSource);
         virtual void light_render(Camera* scene_player);
 

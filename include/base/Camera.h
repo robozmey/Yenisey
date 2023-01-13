@@ -37,6 +37,8 @@ namespace yny {
 
         glm::vec3 camera_position;
 
+        bool is_shadow_camera = false;
+
         glm::mat4 model = glm::mat4(1.f);
         glm::mat4 view = glm::mat4(1.f);
         glm::mat4 projection = glm::mat4(1.f);
