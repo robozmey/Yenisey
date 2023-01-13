@@ -12,7 +12,7 @@ namespace yny {
 
     class ElevationMeshComponent : public MeshComponent {
     public:
-        int lod_count = 1;
+        int lod_count = 3;
 
         ElevationDataObject* elevationDataObject;
         int latitude_minute = 0, longitude_minute = 0;

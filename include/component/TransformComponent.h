@@ -31,10 +31,13 @@ namespace yny {
         TransformComponent();
 
         void move(glm::vec3 movement);
-        void rotate(glm::vec3 rotation1);
+        void rotate(glm::vec3 rotation);
         void rotateX(float x);
         void rotateY(float y);
         void rotateZ(float z);
+
+        void set_position(glm::vec3 position);
+        void set_rotation(glm::vec3 rotation);
 
         glm::mat4 get_transform();
 

@@ -19,6 +19,8 @@ namespace yny {
         ElevationDataObject* elevationDataObject;
         Object *elevationObject;
 
+        glm::vec3 player_rotation = {0, 0, 0};
+
         void update() override;
 
         explicit PlayerScriptComponent(InterfaceData* interfaceData, ElevationDataObject* elevationDataObject, Object* elevationObject);

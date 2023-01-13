@@ -9,11 +9,11 @@
 namespace yny {
     glm::mat4 rotation_matrix(glm::vec3 rotation) {
         glm::mat4 view(1.f);
-        view = view * glm::eulerAngleYXZ(rotation.y, rotation.x, rotation.z);
-//    view = glm::rotate(view, 1.f, rotation);
-//    view = glm::rotate(view, rotation.x, {1, 0, 0});
-//    view = glm::rotate(view, rotation.y, {0, 1, 0});
-//    view = glm::rotate(view, rotation.z, {0, 0, 1});
+        view = view * (glm::eulerAngleYXZ(rotation.y, rotation.x, rotation.z));
+//        view = glm::rotate(view, 1.f, rotation);
+//        view = glm::rotate(view, rotation.x, {1, 0, 0});
+//        view = glm::rotate(view, rotation.y, {0, 1, 0});
+//        view = glm::rotate(view, rotation.z, {0, 0, 1});
         return view;
     }
 
@@ -22,7 +22,11 @@ namespace yny {
     TransformComponent::TransformComponent(glm::vec3 position) : position(position) {}
 
     void TransformComponent::move(glm::vec3 movement) {
-        transform = glm::translate(transform, movement);
+        auto pos = get_position() + movement;
+        auto rot = get_rotation();
+
+        transform = glm::translate(glm::mat4(1), pos);
+        rotate(rot);
 //        position += movement;
     }
 
@@ -57,7 +61,7 @@ namespace yny {
     glm::vec3 get_rotation(glm::mat4 transform) {
 
         glm::vec3 res;
-        extractEulerAngleXYZ(transform, res.x, res.y, res.z);
+        extractEulerAngleYXZ((transform), res.y, res.x, res.z);
         return res;
 
         double h, p, b; // angles in degrees
@@ -96,5 +100,19 @@ namespace yny {
 
     void TransformComponent::rotateZ(float z) {
         rotate({0, 0, z});
+    }
+
+    void TransformComponent::set_rotation(glm::vec3 rotation) {
+        auto position = get_position();
+        transform = glm::mat4(1);
+        move(position);
+        rotate(rotation);
+    }
+
+    void TransformComponent::set_position(glm::vec3 position) {
+        auto rotation = get_rotation();
+        transform = glm::mat4(1);
+        move(position);
+        rotate(rotation);
     }
 } // yny

@@ -88,9 +88,9 @@ int main() {
 
     yny::ElevationDataObject elevationDataObject;
 
-    yny::Material snowMaterial(project_root + "/texture/Stylized_Stone_Floor_005_basecolor.jpg");
-    snowMaterial.add_normal_map(project_root + "/texture/Stylized_Stone_Floor_005_normal.jpg");
-    snowMaterial.add_roughness_map(project_root + "/texture/Stylized_Stone_Floor_005_roughness.jpg");
+    yny::Material snowMaterial(project_root + "/texture/rock_0008_color_1k.jpg");
+    snowMaterial.add_normal_map(project_root + "/texture/rock_0008_normal_opengl_1k.png");
+    snowMaterial.add_roughness_map(project_root + "/texture/rock_0008_roughness_1k.jpg");
 
     yny::Material waterMaterial(glm::vec3({0, 0, 0.6}));
 
@@ -159,7 +159,7 @@ int main() {
 //    waterObject.add_component(yny::Rigibody);
     waterObject.add_component(yny::Mesh, new yny::WaterMeshComponent());
 //    waterObject.add_component(yny::Render, new yny::RenderComponent(&waterMaterial));
-//    scene.add_object(&waterObject);
+    scene.add_object(&waterObject);
 
     bool running = true;
     while (running)

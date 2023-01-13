@@ -34,6 +34,10 @@ namespace yny {
         return to_u32string(std::to_string(val));
     }
 
+//    std::u32string to_u32string(float val) {
+//        return to_u32string(std::to_string(val));
+//    }
+
     void PlayerScriptComponent::update() {
 
         std::map<SDL_Keycode, bool> button_down = Component::componentsObject->scene->input.button_down;
@@ -50,47 +54,54 @@ namespace yny {
         std::u32string longitude_prefix = std::u32string(longitude > 0 ? U"E" : U"W") +
                 (longitude < 10 ? U"00" : (longitude < 100 ? U"0" : U""));
 
-        std::u32string text = latitude_prefix + to_u32string(latitude) + U"g " + to_u32string(latitude_minute) + U"'" +
-                U" " +
-                longitude_prefix + to_u32string(longitude) + U"g " + to_u32string(longitude_minute) + U"'" +
-                U"    " +
-                U"  X: " + to_u32string(tc->get_position().x) +
-                U", Y: " +  to_u32string(tc->get_position().y) +
-                U", Z: " +  to_u32string(tc->get_position().z);
+        std::u32string text;
+//        text += latitude_prefix + to_u32string(latitude) + U"\260 " + to_u32string(latitude_minute) + U"'" +
+//                U" " +
+//                longitude_prefix + to_u32string(longitude) + U"\260 " + to_u32string(longitude_minute) + U"'" +
+//                U"    ";
+        text += U"  X: " + to_u32string(tc->get_position().x);
+        text += U", Y: " +  to_u32string(tc->get_position().y);
+        text += U", Z: " +  to_u32string(tc->get_position().z);
+        text += U"  rX: " + to_u32string(tc->get_rotation().x / glm::pi<float>() * 180);
+        text += U", rY: " +  to_u32string(tc->get_rotation().y / glm::pi<float>() * 180);
+        text += U", rZ: " +  to_u32string(tc->get_rotation().z / glm::pi<float>() * 180);
         interfaceData->text = text;
         interfaceData->text_changed = true;
 
 //        printf("%f %f %f\n", tc->get_rotation().x, tc->get_rotation().y, tc->get_rotation().z);
 
         glm::vec3 movement(0);
-        glm::vec3 rotation(0);
+        glm::vec3 rotationX(0);
+        glm::vec3 rotationY(0);
 
         if (button_down[SDLK_UP])
-            rotation[0] += rotation_speed * dt;
+            rotationX[0] += rotation_speed * dt;
         if (button_down[SDLK_DOWN])
-            rotation[0] -= rotation_speed * dt;
+            rotationX[0] -= rotation_speed * dt;
 
         if (button_down[SDLK_LEFT])
-            rotation[1] += rotation_speed * dt;
+            rotationY[1] += rotation_speed * dt;
         if (button_down[SDLK_RIGHT])
-            rotation[1] -= rotation_speed * dt;
+            rotationY[1] -= rotation_speed * dt;
 
 //        tc->rotateX(rotation[0]);
 //        tc->rotateY(rotation[1]);
 
-        auto rot = rotation;
-        tc->rotate(rot);
+        player_rotation += rotationY;
+        tc->set_rotation(player_rotation);
+        tc->rotate(rotationX);
+        player_rotation = tc->get_rotation();
 
-        glm::vec3 forward_rotation = {0, tc->get_rotation().y, 0};
+        glm::vec3 forward_rotation = tc->get_rotation(); //{0, tc->get_rotation().y, 0};
         glm::vec3 forward_direction = (rotation_matrix(forward_rotation)) * glm::vec4(0, 0, movement_speed, 1);
+//        printf("%s: %f %f %f\n", "fd", forward_direction.x, forward_direction.y, forward_direction.z);
 
         if (button_down[SDLK_w])
             movement -= forward_direction;
         if (button_down[SDLK_s])
             movement += forward_direction;
 
-        glm::vec3 side_rotation = forward_rotation + glm::vec3(0, glm::pi<float>() / 2, 0);
-        glm::vec3 side_direction = (rotation_matrix(side_rotation)) * glm::vec4(0, 0, movement_speed, 1);
+        glm::vec3 side_direction = (rotation_matrix(forward_rotation)) * glm::vec4(movement_speed, 0, 0, 1);
 
         if (button_down[SDLK_a])
             movement -= side_direction;
