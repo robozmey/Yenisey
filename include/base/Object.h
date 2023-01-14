@@ -43,6 +43,7 @@ namespace yny {
         void apply_transform();
 
         virtual void update_vertices(Camera* scene_player);
+        virtual std::vector<glm::vec2> get_bounding_box();
 
         virtual void shadow_render(LightSource* lightSource);
 

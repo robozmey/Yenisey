@@ -45,6 +45,10 @@ namespace yny {
         GLuint texture_roughness;
         std::string texture_roughness_path;
 
+        bool has_texture_ambient_occlusion = false;
+        GLuint texture_ambient_occlusion;
+        std::string texture_ambient_occlusion_path;
+
         glm::vec4 color;
 
         Material();
@@ -56,8 +60,8 @@ namespace yny {
         explicit Material(std::string texture_path);
 
         void add_normal_map(std::string texture_path);
-
         void add_roughness_map(std::string texture_path);
+        void add_ambient_occlusion_map(std::string texture_path);
 
     private:
         void create_one_color(glm::vec4);

@@ -37,9 +37,9 @@ namespace yny {
         glm::vec3 color = {1, 1, 1};
         float light_intensity = 0.2;
 
-        glm::vec3 attenuation = {1.0, 0.0, 0.001};
+        glm::vec3 attenuation = {0.01, 0.0, 0.000001};
 
-        int shadow_map_resolution = 512;
+        int shadow_map_resolution = 1024;
         GLuint shadow_map;
         GLuint shadow_fbo;
         GLuint shadow_rbo;

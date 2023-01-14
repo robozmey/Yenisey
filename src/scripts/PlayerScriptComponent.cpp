@@ -55,10 +55,10 @@ namespace yny {
                 (longitude < 10 ? U"00" : (longitude < 100 ? U"0" : U""));
 
         std::u32string text;
-//        text += latitude_prefix + to_u32string(latitude) + U"\260 " + to_u32string(latitude_minute) + U"'" +
-//                U" " +
-//                longitude_prefix + to_u32string(longitude) + U"\260 " + to_u32string(longitude_minute) + U"'" +
-//                U"    ";
+        text += latitude_prefix + to_u32string(latitude) + U"\260 " + to_u32string(latitude_minute) + U"'" +
+                U" " +
+                longitude_prefix + to_u32string(longitude) + U"\260 " + to_u32string(longitude_minute) + U"'" +
+                U"    ";
         text += U"  X: " + to_u32string(tc->get_position().x);
         text += U", Y: " +  to_u32string(tc->get_position().y);
         text += U", Z: " +  to_u32string(tc->get_position().z);

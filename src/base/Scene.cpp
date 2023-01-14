@@ -61,6 +61,7 @@ namespace yny {
         glEnable(GL_CULL_FACE);
 
         lightSources[0]->direction = {sin(time / 2), 1, cos(time / 2)};
+        lightSources[1]->position = {sin(time) * 1000, 700, cos(time) * 1000};
 
         /// Render SHADOWS
 //        for (auto vertex : scene.vertices) {
@@ -71,6 +72,7 @@ namespace yny {
 //        }
 
         C = {0, 0, 0};
+        C = sceneCamera->get_camera_position();
 //        for (auto vertex : scene.vertices) {
 //            for (int i = 0; i < 3; i++) {
 //                C[i] += vertex.position[i];
@@ -228,13 +230,18 @@ namespace yny {
         LightSource* directionalLightSource = new LightSource(DirectionalLight);
         directionalLightSource->direction = {sin(time / 2), 1, cos(time / 2)};
         lightSources.push_back(directionalLightSource);
+//
+//        LightSource* directionalLightSource2 = new LightSource(DirectionalLight);
+//        directionalLightSource2->direction = {sin(time / 2), 1, cos(time / 2)};
+//        lightSources.push_back(directionalLightSource2);
+
+        LightSource* spotLightSource = new LightSource(SpotLight);
+        spotLightSource->color = {1, 1, 0};
+        spotLightSource->position = {0, 500, 0};
+        lightSources.push_back(spotLightSource);
 
         LightSource* ambientLightSource = new LightSource();
         lightSources.push_back(ambientLightSource);
-
-        LightSource* spotLightSource = new LightSource(SpotLight);
-        spotLightSource->position = {0, -500, 0};
-//        lightSources.push_back(spotLightSource);
 
     }
 

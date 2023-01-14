@@ -40,4 +40,10 @@ namespace yny {
         texture_roughness_path = texture_path;
         texture_roughness = load_texture(texture_path);
     }
+
+    void Material::add_ambient_occlusion_map(std::string texture_path) {
+        has_texture_ambient_occlusion = true;
+        texture_ambient_occlusion_path = texture_path;
+        texture_ambient_occlusion = load_texture(texture_path);
+    }
 } // yny

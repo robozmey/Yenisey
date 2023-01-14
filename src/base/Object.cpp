@@ -189,4 +189,24 @@ namespace yny {
         parentObject = nullptr;
         add_component(Transform);
     }
+
+    std::vector<glm::vec2> Object::get_bounding_box() {
+        std::vector<glm::vec2> bounding_box(3);
+        for (int i = 0; i < 3; i++) {
+            bounding_box[i][0] = 0;
+            bounding_box[i][1] = 0;
+        }
+        if (components.contains(Mesh)) {
+            MeshComponent* meshComponent = static_cast<MeshComponent *>(components[Mesh]);
+            bounding_box = meshComponent->get_bounding_box();
+        }
+
+        for (Object* obj : objects) {
+            auto obj_bbox = obj->get_bounding_box();
+            for (int i = 0; i < 3; i++) {
+                bounding_box[i][0] = std::min(bounding_box[i][0], obj_bbox[i][0]);
+                bounding_box[i][1] = std::max(bounding_box[i][1], obj_bbox[i][1]);
+            }
+        }
+    }
 } // yny

@@ -35,7 +35,7 @@ namespace yny {
 
     void main()
     {
-        position = in_position;
+        position = (transform * vec4(in_position, 1.0)).rgb;
         gl_Position = projection * view * model * transform * vec4(in_position, 1.0);
         glposition = gl_Position.xyz;
         tangent = mat3(model) * in_tangent;
@@ -99,6 +99,9 @@ namespace yny {
     uniform float material_glossiness;
     uniform sampler2D material_texture_glossiness;
 
+    uniform bool material_has_texture_ambient_occlusion;
+    uniform sampler2D material_texture_ambient_occlusion;
+
     uniform float power;
 
 
@@ -151,7 +154,7 @@ namespace yny {
 
     void main()
     {
-        vec2 real_texcoord = (transform * vec4(position, 1)).xz / 1000;
+        vec2 real_texcoord = position.xz / 1000;
         if (has_texcoord == 1) {
             real_texcoord = texcoord;
         }
@@ -170,7 +173,11 @@ namespace yny {
         }
 
         if (light_type == ambient_light_type) {
-            out_color = vec4(light_color * light_intensity, 1);
+            float real_light_intensity = light_intensity;
+            if (material_has_texture_ambient_occlusion) {
+                real_light_intensity = texture(material_texture_ambient_occlusion, real_texcoord).r * light_intensity;
+            }
+            out_color = vec4(light_color * real_light_intensity, 1);
         } else {
             vec3 light_direction;
             float real_light_intensity = light_intensity;
@@ -178,11 +185,23 @@ namespace yny {
             if (light_type == directional_light_type) {
                 light_direction = directional_light_direction;
 
-                vec4 shadow_pos = shadow_transform * transform * vec4(position, 1.0);
+                vec4 shadow_pos = shadow_transform * vec4(position, 1.0);
                 shadow_pos /= shadow_pos.w;
                 shadow_pos = shadow_pos * 0.5 + vec4(0.5);
 
-                vec2 data = texture(shadow_map, shadow_pos.xy).rg;
+                vec2 sum = vec2(0.0);
+                float sum_w = 0.0;
+                const int N = 3;
+                float radius = 3.0;
+
+                for (int x = -N; x <= N; ++x) {
+                    for (int y = -N; y <= N; ++y) {
+                        float c = exp(-float(x*x + y*y) / (radius*radius));
+                        sum += c * texture(shadow_map, shadow_pos.xy + vec2(x,y) / vec2(textureSize(shadow_map, 0))).rg;;
+                        sum_w += c;
+                    }
+                }
+                vec2 data = sum / sum_w;
 
                 float mu = data.r;
                 float sigma = data.g - mu * mu;
@@ -199,7 +218,7 @@ namespace yny {
                 real_light_intensity = light_intensity * factor;
 
             } else if (light_type == spot_light_type) {
-                light_direction = normalize(position - spot_light_position);
+                light_direction = normalize(spot_light_position - position);
                 float dist = distance(position, spot_light_position);
                 real_light_intensity = 1 / (spot_light_attenuation.x + spot_light_attenuation.y * dist + spot_light_attenuation.z * dist * dist) * light_intensity;
             }
@@ -268,7 +287,7 @@ namespace yny {
 
     void main()
     {
-        vec2 real_texcoord = (transform * vec4(position, 1)).xz / 1000;
+        vec2 real_texcoord = position.xz / 1000;
         if (has_texcoord == 1) {
             real_texcoord = texcoord;
         }
@@ -296,8 +315,12 @@ namespace yny {
     //    out_color = vec4(texture(material_texture_normal, real_texcoord).xyz, 1);
     //    out_color = vec4(vec3(material_has_texture_normal), 1);
 
+//        if (position.y < 260) {
+//            out_color = vec4(out_color.rgb * vec3(0.7, 0.7, 1), out_color.a);
+//        }
 
-//        out_color = vec4(pow(abs(out_color.rgb), vec3(gamma)), 1);
+
+//        out_color = vec4(pow(abs(out_color.rgb), vec3(gamma)), out_color.a);
 
     }
     )";
@@ -333,6 +356,8 @@ namespace yny {
         GLuint material_has_texture_roughness_location;
         GLuint material_roughness_location;
         GLuint material_texture_roughness_location;
+        GLuint material_has_texture_ambient_occlusion_location;
+        GLuint material_texture_ambient_occlusion_location;
 
         GLuint screen_height_location;
         GLuint light_map_location;

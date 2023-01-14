@@ -26,4 +26,13 @@ namespace yny {
     MeshComponent::MeshComponent() : Component() {
         type = Mesh;
     }
+
+    std::vector<glm::vec2> MeshComponent::get_bounding_box() {
+        std::vector<glm::vec2> bounding_box(3);
+        for (int i = 0; i < 3; i++) {
+            bounding_box[i][0] = 0;
+            bounding_box[i][1] = 0;
+        }
+        return bounding_box;
+    }
 }

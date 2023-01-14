@@ -88,9 +88,10 @@ int main() {
 
     yny::ElevationDataObject elevationDataObject;
 
-    yny::Material snowMaterial(project_root + "/texture/rock_0008_color_1k.jpg");
-    snowMaterial.add_normal_map(project_root + "/texture/rock_0008_normal_opengl_1k.png");
-    snowMaterial.add_roughness_map(project_root + "/texture/rock_0008_roughness_1k.jpg");
+    yny::Material snowMaterial(project_root + "/texture/Snow_02_basecolor.png");
+    snowMaterial.add_normal_map(project_root + "/texture/Snow_02_normal.png");
+    snowMaterial.add_roughness_map(project_root + "/texture/Snow_02_roughness.png");
+    snowMaterial.add_ambient_occlusion_map(project_root + "/texture/Snow_02_ambientOcclusion.png");
 
     yny::Material waterMaterial(glm::vec3({0, 0, 0.6}));
 

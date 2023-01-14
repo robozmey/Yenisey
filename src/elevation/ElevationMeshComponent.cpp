@@ -13,7 +13,7 @@ namespace yny {
         float center_latitude_grad = elevationDataObject->latitude + latitude_seconds / 3600.f;
         float center_longitude_grad = elevationDataObject->longitude + longitude_seconds / 3600.f;
 
-        int diam_seconds = 90;
+        int diam_seconds = 120;
 
         int diam_size = diam_seconds * 2 + 1;
 

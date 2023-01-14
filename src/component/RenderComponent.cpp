@@ -13,6 +13,7 @@
 /// 2 - material roughness
 /// 3 - light map
 /// 4 - shadow map
+/// 5 - ambient occlusion map
 
 namespace yny {
 
@@ -61,12 +62,21 @@ namespace yny {
                     glBindTexture(GL_TEXTURE_2D, material->texture_normal);
                     glUniform1i(material_texture_normal_location, 1);
                 }
+
+                glUniform1i(material_has_texture_roughness_location, material->has_texture_roughness);
                 if (material->has_texture_roughness) {
                     glActiveTexture(GL_TEXTURE2);
                     glBindTexture(GL_TEXTURE_2D, material->texture_roughness);
                     glUniform1i(material_texture_roughness_location, 2);
                 } else {
                     glUniform1f(material_roughness_location, material->roughness);
+                }
+
+                glUniform1i(material_has_texture_ambient_occlusion_location, material->has_texture_ambient_occlusion);
+                if (material->has_texture_ambient_occlusion) {
+                    glActiveTexture(GL_TEXTURE5);
+                    glBindTexture(GL_TEXTURE_2D, material->texture_ambient_occlusion);
+                    glUniform1i(material_texture_ambient_occlusion_location, 5);
                 }
 
             }
@@ -193,7 +203,9 @@ namespace yny {
         material_texture_normal_location = glGetUniformLocation(program, "material_texture_normal");
         material_has_texture_roughness_location = glGetUniformLocation(program, "material_has_texture_roughness");;
         material_roughness_location = glGetUniformLocation(program, "material_roughness");;
-        material_texture_roughness_location = glGetUniformLocation(program, "material_texture_roughness");;
+        material_texture_roughness_location = glGetUniformLocation(program, "material_texture_roughness");
+        material_has_texture_ambient_occlusion_location = glGetUniformLocation(program, "material_has_texture_ambient_occlusion");;
+        material_texture_ambient_occlusion_location = glGetUniformLocation(program, "material_texture_ambient_occlusion");;
 
         screen_height_location = glGetUniformLocation(program, "screen_height");
         light_map_location = glGetUniformLocation(program, "light_map");

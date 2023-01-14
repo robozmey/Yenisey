@@ -25,6 +25,8 @@ namespace yny {
 
         void apply_transform();
 
+        virtual std::vector<glm::vec2> get_bounding_box();
+
         MeshComponent();
     };
 }
