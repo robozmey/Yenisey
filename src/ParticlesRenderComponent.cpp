@@ -37,6 +37,7 @@ layout (triangle_strip, max_vertices = 4) out;
 in float size[];
 in float rotation[];
 
+out vec3 position;
 out vec2 texcoord;
 
 void main()
@@ -54,6 +55,7 @@ void main()
     for (int i = 0; i < 4; i++) {
         vec3 pos = center + size[0] * X_r * (i / 2 == 0 ? -1 : 1) + size[0] * Y_r * (i % 2 == 0 ? -1 : 1);
         gl_Position = projection * view * model * vec4(pos, 1.0);
+        position = (model * vec4(pos, 1.0)).xyz;
         texcoord = vec2((i / 2 == 0 ? 0 : 1), (i % 2 == 0 ? 0 : 1));
         EmitVertex();
     }
